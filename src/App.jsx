@@ -42,6 +42,26 @@ function App() {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
+  const handlePreviousQuestion = () => {
+    setCurrentQuestion((prevCurrentQuestion) => {
+      if (prevCurrentQuestion === 0) {
+        return questions.length - 1;
+      }
+
+      return prevCurrentQuestion - 1;
+    });
+  };
+
+  const handleNextQuestion = () => {
+    setCurrentQuestion((prevCurrentQuestion) => {
+      if (prevCurrentQuestion === questions.length - 1) {
+        return 0;
+      }
+
+      return prevCurrentQuestion + 1;
+    });
+  };
+
   return (
     <main>
       <form>
@@ -65,6 +85,13 @@ function App() {
           );
         })}
       </form>
+      <section>
+        <button onClick={handlePreviousQuestion}>Previous</button>
+        <span>
+          {currentQuestion} / {questions.length - 1}
+        </span>
+        <button onClick={handleNextQuestion}>Next</button>
+      </section>
     </main>
   );
 }
