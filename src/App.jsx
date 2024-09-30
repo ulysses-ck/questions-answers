@@ -67,7 +67,12 @@ function App() {
       <form>
         {questions.map((question, idxQuestion) => {
           return (
-            <label key={idxQuestion}>
+            <label
+              key={idxQuestion}
+              style={{
+                display: idxQuestion === currentQuestion ? "block" : "none",
+              }}
+            >
               <h2>{question.question}</h2>
               {question.answers.map((answer, idxAnswer) => {
                 return (
