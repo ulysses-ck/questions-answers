@@ -62,6 +62,12 @@ function App() {
     });
   };
 
+  const handleClickIsEnd = () => {
+    setIsEnd(true);
+  };
+
+  const [isEnd, setIsEnd] = useState(false);
+
   return (
     <main>
       <form>
@@ -81,6 +87,7 @@ function App() {
                       type="radio"
                       name={`question-${idxQuestion}`}
                       value={answer.text}
+                      disabled={isEnd}
                     />
                     {answer.text}
                   </label>
@@ -96,6 +103,11 @@ function App() {
           {currentQuestion} / {questions.length - 1}
         </span>
         <button onClick={handleNextQuestion}>Next</button>
+        {currentQuestion === questions.length - 1 && (
+          <button onClick={handleClickIsEnd}>
+            {isEnd ? "Show results" : "End"}
+          </button>
+        )}
       </section>
     </main>
   );
