@@ -40,12 +40,12 @@ function App() {
     },
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
 
   const handlePreviousQuestion = () => {
     setCurrentQuestion((prevCurrentQuestion) => {
-      if (prevCurrentQuestion === 0) {
-        return questions.length - 1;
+      if (prevCurrentQuestion === 1) {
+        return questions.length;
       }
 
       return prevCurrentQuestion - 1;
@@ -54,8 +54,8 @@ function App() {
 
   const handleNextQuestion = () => {
     setCurrentQuestion((prevCurrentQuestion) => {
-      if (prevCurrentQuestion === questions.length - 1) {
-        return 0;
+      if (prevCurrentQuestion === questions.length) {
+        return 1;
       }
 
       return prevCurrentQuestion + 1;
@@ -81,7 +81,7 @@ function App() {
             <label
               key={idxQuestion}
               style={{
-                display: idxQuestion === currentQuestion ? "block" : "none",
+                display: idxQuestion+1 === currentQuestion ? "block" : "none",
               }}
             >
               <h2>{question.question}</h2>
@@ -105,10 +105,10 @@ function App() {
       <section>
         <button onClick={handlePreviousQuestion}>Previous</button>
         <span>
-          {currentQuestion} / {questions.length - 1}
+          {currentQuestion} / {questions.length}
         </span>
         <button onClick={handleNextQuestion}>Next</button>
-        {currentQuestion === questions.length - 1 && !isEnd && (
+        {currentQuestion - 1 === questions.length - 1 && !isEnd && (
           <button onClick={handleClickIsEnd}>Show results</button>
         )}
 
