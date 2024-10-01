@@ -66,6 +66,11 @@ function App() {
     setIsEnd(true);
   };
 
+  const handleClickRestart = () => {
+    setCurrentQuestion(0);
+    setIsEnd(false);
+  };
+
   const [isEnd, setIsEnd] = useState(false);
 
   return (
@@ -103,11 +108,11 @@ function App() {
           {currentQuestion} / {questions.length - 1}
         </span>
         <button onClick={handleNextQuestion}>Next</button>
-        {currentQuestion === questions.length - 1 && (
-          <button onClick={handleClickIsEnd}>
-            {isEnd ? "Show results" : "End"}
-          </button>
+        {currentQuestion === questions.length - 1 && !isEnd && (
+          <button onClick={handleClickIsEnd}>Show results</button>
         )}
+
+        {isEnd && <button onClick={handleClickRestart}>Restart</button>}
       </section>
     </main>
   );
