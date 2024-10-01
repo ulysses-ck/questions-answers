@@ -68,7 +68,7 @@ function App() {
   };
 
   const handleClickRestart = () => {
-    setCurrentQuestion(0);
+    setCurrentQuestion(1);
     setIsEnd(false);
     formQuestions.current.reset();
   };
