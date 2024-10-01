@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function App() {
   const questions = [
@@ -41,6 +41,7 @@ function App() {
   ];
 
   const [currentQuestion, setCurrentQuestion] = useState(1);
+  const formQuestions = useRef(null);
 
   const handlePreviousQuestion = () => {
     setCurrentQuestion((prevCurrentQuestion) => {
@@ -69,19 +70,20 @@ function App() {
   const handleClickRestart = () => {
     setCurrentQuestion(0);
     setIsEnd(false);
+    formQuestions.current.reset();
   };
 
   const [isEnd, setIsEnd] = useState(false);
 
   return (
     <main>
-      <form>
+      <form ref={formQuestions}>
         {questions.map((question, idxQuestion) => {
           return (
             <label
               key={idxQuestion}
               style={{
-                display: idxQuestion+1 === currentQuestion ? "block" : "none",
+                display: idxQuestion + 1 === currentQuestion ? "block" : "none",
               }}
             >
               <h2>{question.question}</h2>
