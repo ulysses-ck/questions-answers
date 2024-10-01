@@ -89,7 +89,12 @@ function App() {
               <h2>{question.question}</h2>
               {question.answers.map((answer, idxAnswer) => {
                 return (
-                  <label key={idxAnswer}>
+                  <label
+                    key={idxAnswer}
+                    style={{
+                      color: answer.correct && isEnd ? "green" : "black",
+                    }}
+                  >
                     <input
                       type="radio"
                       name={`question-${idxQuestion}`}
