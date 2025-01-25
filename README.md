@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Questions & Answers
+
+A questionnaire application built with Next.js that allows users to create and answer questions.
+
+## Tech Stack
+
+- **Framework:** [Next.js 15](https://nextjs.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/) with [Drizzle ORM](https://orm.drizzle.team/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [HeroUI](https://heroui.com/)
+- **Animation:** [Framer Motion](https://www.framer.com/motion/)
+
+## Features
+
+- 📝 Create and manage questionnaires
+- 💾 Persistent storage with PostgreSQL
+- 📱 Responsive design
+- ⚡ Fast page loads with Next.js
+- 🎨 Modern UI with Tailwind CSS and HeroUI
+- 🎬 Smooth animations with Framer Motion
+- 📝 Type-safe development with TypeScript
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd questions-answers
+```
 
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up your environment variables:
+```bash
+cp .env.example .env
+```
+Fill in your PostgreSQL database connection details and other required variables.
+
+4. Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/              # Next.js app directory
+├── components/       # React components
+├── db/              # Database schema and configurations
+└── lib/             # Utility functions and configurations
+```
 
-## Learn More
+## Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` - Start development server
+- `npm run build` - Create production build
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint for code linting
+- `npm run dbml` - Generate DBML documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project uses PostgreSQL with Drizzle ORM for database management. The schema can be visualized using the DBML generator tool.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## License
+
+This project is open source and available under the MIT License.
