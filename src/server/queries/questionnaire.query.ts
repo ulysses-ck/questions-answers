@@ -51,3 +51,21 @@ export const getQuestionnaireById = async (id: number) => {
 
   return questionnaire;
 };
+
+export const checkAnswer = async (questionId: number, answerId: number) => {
+  const answer = await db
+    .select({
+      id: answerTable.id,
+      text: answerTable.text,
+      isCorrect: answerTable.isCorrect,
+    })
+    .from(answerTable)
+    .where(eq(answerTable.id, answerId))
+    .limit(1);
+
+  if (answer.length === 0) {
+    return null;
+  }
+
+  return { isCorrect: answer[0].isCorrect };
+};
