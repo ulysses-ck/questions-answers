@@ -1,5 +1,7 @@
 # Contributing to Questions & Answers
 
+[← Back to main README](../README.md)
+
 We love your input! We want to make contributing to Questions & Answers as easy and transparent as possible, whether it's:
 
 - Reporting a bug
@@ -12,12 +14,67 @@ We love your input! We want to make contributing to Questions & Answers as easy 
 
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-1. Fork the repo and create your branch from `main`
-2. If you've added code that should be tested, add tests
-3. If you've changed APIs, update the documentation
-4. Ensure the test suite passes
-5. Make sure your code lints
-6. Issue that pull request!
+### Git Flow
+
+We follow the Git Flow branching model:
+
+- `main` - Production-ready code
+- `develop` - Latest development changes
+- `feature/*` - New features
+- `bugfix/*` - Bug fixes
+- `release/*` - Release preparation
+- `hotfix/*` - Urgent production fixes
+
+Example workflow:
+```bash
+# Start a new feature
+git checkout develop
+git checkout -b feature/my-awesome-feature
+
+# Make your changes, then
+git add .
+git commit -m "feat: add awesome feature"
+git push origin feature/my-awesome-feature
+
+# Create PR to merge into develop
+```
+
+### Conventional Commits
+
+We use conventional commits to make our commit messages more meaningful. Format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only changes
+- `style`: Changes that don't affect code meaning
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `perf`: Code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to build process or auxiliary tools
+- `ci`: Changes to CI configuration files and scripts
+
+Examples:
+```bash
+git commit -m "feat(auth): add login with Google"
+git commit -m "fix(db): resolve connection timeout issue"
+git commit -m "docs: update API documentation"
+```
+
+Breaking Changes:
+```bash
+git commit -m "feat!: drop support for Node 14
+
+BREAKING CHANGE: Node 14 is no longer supported."
+```
 
 ## Local Development Setup
 
@@ -31,17 +88,20 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 ## Pull Request Process
 
-1. Update the README.md with details of changes to the interface
-2. Update the version numbers in any examples files and the README.md to the new version
-3. The PR will be merged once you have the sign-off of at least one maintainer
+1. Fork the repo and create your branch from `main`
+2. If you've added code that should be tested, add tests
+3. If you've changed APIs, update the documentation
+4. Ensure the test suite passes
+5. Make sure your code lints
+6. Issue that pull request!
 
-## Any Contributions You Make Will Be Under the MIT License
+## Reporting Issues
 
-When you submit code changes, your submissions are understood to be under the same [MIT License](../LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
-
-## Report Bugs Using GitHub's [Issue Tracker](../../issues)
-
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](../../issues/new).
+1. Use our [issue template](.github/ISSUE_TEMPLATE.md) to create a new issue
+2. Provide all the required information
+3. Be specific about the problem
+4. Include steps to reproduce
+5. Add screenshots if applicable
 
 ## Write Bug Reports With Detail, Background, and Sample Code
 

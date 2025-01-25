@@ -94,10 +94,10 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.MD) for details on how to:
 
-- Submit issues
-- Create pull requests
+- Submit issues using our [issue template](.github/ISSUE_TEMPLATE.md)
+- Create pull requests following our [Git Flow](docs/CONTRIBUTING.MD#git-flow)
 - Set up your development environment
-- Follow our coding standards
+- Follow our [conventional commits](docs/CONTRIBUTING.MD#conventional-commits) standard
 
 ## License
 
