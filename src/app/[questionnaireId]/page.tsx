@@ -1,15 +1,17 @@
 import { getQuestionnaireById } from "@/server/queries/questionnaire.query";
 import { Card, CardBody, CardHeader, Chip } from "@heroui/react";
 
-export default async function Page({ params }: { params: Promise<{ questionnareId: string }> }) {
-    const questionnareIdParam = (await params).questionnareId;
-    const questionnareId = Number(questionnareIdParam);
+export default async function Page({ params }: { params: Promise<{ questionnaireId: string }> }) {
+    const questionnaireIdParam = (await params).questionnaireId;
+    console.log(questionnaireIdParam);
+    const questionnaireId = Number(questionnaireIdParam);
+    console.log(questionnaireId);
 
-    if (isNaN(questionnareId)) {
+    if (isNaN(questionnaireId)) {
         return <div>Invalid questionnare id</div>
     }
 
-    const questionnaire = await getQuestionnaireById(questionnareId);
+    const questionnaire = await getQuestionnaireById(questionnaireId);
 
     if (!questionnaire) {
         return <div>Questionnaire not found</div>
