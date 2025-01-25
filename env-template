@@ -1,0 +1,4 @@
+# example connection string
+
+# ssl is disabled to run drizzle-kit studio
+DATABASE_URL=postgresql://user:password@host:port/database?sslmode=disable
