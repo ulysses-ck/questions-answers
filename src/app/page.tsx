@@ -32,12 +32,12 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-3xl font-bold mb-8">Built With Modern Tech Stack</h2>
         <div className="flex flex-wrap justify-center gap-4">
-          <TechBadge>Next.js 15</TechBadge>
+          <TechBadge>Next.js 15.1</TechBadge>
           <TechBadge>PostgreSQL</TechBadge>
           <TechBadge>Drizzle ORM</TechBadge>
           <TechBadge>TypeScript</TechBadge>
           <TechBadge>Tailwind CSS</TechBadge>
-          <TechBadge>HeroUI</TechBadge>
+          <TechBadge>React 19</TechBadge>
           <TechBadge>Framer Motion</TechBadge>
         </div>
       </section>

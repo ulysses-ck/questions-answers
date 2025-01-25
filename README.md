@@ -4,12 +4,15 @@ A questionnaire application built with Next.js that allows users to create and a
 
 ## Tech Stack
 
-- **Framework:** [Next.js 15](https://nextjs.org/)
+- **Framework:** [Next.js 15.1](https://nextjs.org/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/) with [Drizzle ORM](https://orm.drizzle.team/)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components:** [HeroUI](https://heroui.com/)
+- **Form Handling:** [React Hook Form](https://react-hook-form.com/)
+- **Validation:** [Zod](https://zod.dev/)
 - **Animation:** [Framer Motion](https://www.framer.com/motion/)
+- **Runtime:** [React 19](https://react.dev/)
 
 ## Features
 
@@ -19,7 +22,7 @@ A questionnaire application built with Next.js that allows users to create and a
 - ⚡ Fast page loads with Next.js
 - 🎨 Modern UI with Tailwind CSS and HeroUI
 - 🎬 Smooth animations with Framer Motion
-- 📝 Type-safe development with TypeScript
+- 📝 Type-safe development with TypeScript and Zod
 
 ## Getting Started
 
