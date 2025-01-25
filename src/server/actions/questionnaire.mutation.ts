@@ -8,8 +8,6 @@ import {
   answerInsertSchema,
   questionnaireUpdateSchema,
   answerUpdateSchema,
-  type QuestionnaireInsert,
-  type AnswerInsert
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -87,11 +85,6 @@ export async function updateQuestionnaire(
           .from(answerTable)
           .where(eq(answerTable.questionnaireId, id));
 
-        // Create a map of existing answers by ID
-        const existingAnswersMap = new Map(
-          existingAnswers.map(answer => [answer.id, answer])
-        );
-
         // Process each answer in the update data
         for (const answer of data.answers) {
           if (answer.id) {
@@ -104,9 +97,6 @@ export async function updateQuestionnaire(
               .update(answerTable)
               .set(updateData)
               .where(eq(answerTable.id, answer.id));
-            
-            // Remove from map to track which ones to delete
-            existingAnswersMap.delete(answer.id);
           } else {
             // Insert new answer
             const insertData = answerInsertSchema.parse({
@@ -118,12 +108,16 @@ export async function updateQuestionnaire(
           }
         }
 
-        // Delete answers that weren't in the update data
-        if (existingAnswersMap.size > 0) {
-          const answerIdsToDelete = Array.from(existingAnswersMap.keys());
-          await tx
-            .delete(answerTable)
-            .where(eq(answerTable.questionnaireId, id));
+        // Delete answers that are not in the new data
+        if (existingAnswers.length > 0) {
+          const newAnswerIds = data.answers?.map((answer) => answer.id).filter(Boolean) as number[];
+          const answerIdsToDelete = existingAnswers
+            .filter((answer) => !newAnswerIds.includes(answer.id))
+            .map((answer) => answer.id);
+          
+          if (answerIdsToDelete.length > 0) {
+            await db.delete(answerTable).where(eq(answerTable.id, answerIdsToDelete[0]));
+          }
         }
       }
 

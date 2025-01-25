@@ -5,7 +5,6 @@ import { Input, Switch } from "@heroui/react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { questionnaireUpdateSchema, answerUpdateSchema } from "@/db/schema";
 import { updateQuestionnaire } from "@/server/actions/questionnaire.mutation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
