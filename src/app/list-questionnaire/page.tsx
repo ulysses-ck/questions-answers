@@ -1,5 +1,6 @@
 import { getQuestionnaires } from "@/server/queries/questionnaire.query";
 import { Card, CardBody, CardHeader } from "@heroui/react";
+import Link from "next/link";
 
 export default async function Page() {
     const questionnaires = await getQuestionnaires();
@@ -21,13 +22,15 @@ function QuestionnaireList({ questionnaires }: {
     }[]
 }) {
     return questionnaires.map((questionnaire) => (
-        <Card key={questionnaire.id} className="hover:scale-105 transition-transform">
-            <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                <p className="text-tiny uppercase font-bold">Question #{questionnaire.id}</p>
-            </CardHeader>
-            <CardBody className="overflow-visible py-2">
-                <p>{questionnaire.question}</p>
-            </CardBody>
-        </Card>
+        <Link href={`/${questionnaire.id}`} key={questionnaire.id}>
+            <Card className="hover:scale-105 transition-transform cursor-pointer">
+                <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                    <p className="text-tiny uppercase font-bold">Question #{questionnaire.id}</p>
+                </CardHeader>
+                <CardBody className="overflow-visible py-2">
+                    <p className="font-medium">{questionnaire.question}</p>
+                </CardBody>
+            </Card>
+        </Link>
     ));
 }
