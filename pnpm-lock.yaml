@@ -51,6 +51,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.0.3(@types/react@19.0.8)
+      drizzle-dbml-generator:
+        specifier: ^0.10.0
+        version: 0.10.0(drizzle-orm@0.38.4(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(react@19.0.0))
       drizzle-kit:
         specifier: ^0.30.2
         version: 0.30.2
@@ -2250,6 +2253,11 @@ packages:
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
+
+  drizzle-dbml-generator@0.10.0:
+    resolution: {integrity: sha512-cMZq9E3U3RlmE0uBeXyc6oWJ0royOkC6HiTlc9LDeMe+W87poZTzKoNYUyAxZrs4Q1RQtob+cGKiefV4ZoI8HA==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
 
   drizzle-kit@0.30.2:
     resolution: {integrity: sha512-vhdLrxWA32WNVF77NabpSnX7pQBornx64VDQDmKddRonOB2Xe/yY4glQ7rECoa+ogqcQNo7VblLUbeBK6Zn9Ow==}
@@ -6508,6 +6516,10 @@ snapshots:
       esutils: 2.0.3
 
   dotenv@16.4.7: {}
+
+  drizzle-dbml-generator@0.10.0(drizzle-orm@0.38.4(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(react@19.0.0)):
+    dependencies:
+      drizzle-orm: 0.38.4(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(react@19.0.0)
 
   drizzle-kit@0.30.2:
     dependencies:
