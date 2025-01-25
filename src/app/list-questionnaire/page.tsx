@@ -1,36 +1,46 @@
+import { Card, CardBody } from "@heroui/react";
 import { getQuestionnaires } from "@/server/queries/questionnaire.query";
-import { Card, CardBody, CardHeader } from "@heroui/react";
 import Link from "next/link";
+import { Button } from "@heroui/button";
+import DeleteQuestionnaireButton from "@/components/delete-questionnaire-button";
 
-export default async function Page() {
+export default async function ListQuestionnairePage() {
     const questionnaires = await getQuestionnaires();
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Questionnaires</h1>
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <QuestionnaireList questionnaires={questionnaires} />
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Questionnaires</h1>
+                <Link href="/create">
+                    <Button color="primary">Create New</Button>
+                </Link>
+            </div>
+
+            <div className="grid gap-4">
+                {questionnaires.map((questionnaire) => (
+                    <Card key={questionnaire.id}>
+                        <CardBody>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl">{questionnaire.question}</h2>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Link href={`/${questionnaire.id}/edit`}>
+                                        <Button color="default" variant="flat">
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                    <DeleteQuestionnaireButton id={questionnaire.id} />
+                                </div>
+                            </div>
+                        </CardBody>
+                    </Card>
+                ))}
+
+                {questionnaires.length === 0 && (
+                    <p className="text-center text-gray-500">No questionnaires found</p>
+                )}
             </div>
         </div>
     );
-}
-
-function QuestionnaireList({ questionnaires }: {
-    questionnaires: {
-        id: number;
-        question: string;
-    }[]
-}) {
-    return questionnaires.map((questionnaire) => (
-        <Link href={`/${questionnaire.id}`} key={questionnaire.id}>
-            <Card className="hover:scale-105 transition-transform cursor-pointer">
-                <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">Question #{questionnaire.id}</p>
-                </CardHeader>
-                <CardBody className="overflow-visible py-2">
-                    <p className="font-medium">{questionnaire.question}</p>
-                </CardBody>
-            </Card>
-        </Link>
-    ));
 }
