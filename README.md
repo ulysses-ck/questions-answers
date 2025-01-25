@@ -43,7 +43,12 @@ cp .env.example .env
 ```
 Fill in your PostgreSQL database connection details and other required variables.
 
-4. Run the development server:
+4. Seed the database with sample data:
+```bash
+npm run seed
+```
+
+5. Run the development server:
 ```bash
 npm run dev
 ```
@@ -67,10 +72,17 @@ src/
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint for code linting
 - `npm run dbml` - Generate DBML documentation
+- `npm run seed` - Populate database with sample quiz questions
 
 ## Database Management
 
 This project uses PostgreSQL with Drizzle ORM for database management. The schema can be visualized using the DBML generator tool.
+
+### Sample Data
+Running `npm run seed` will populate your database with:
+- 10 quiz questions across various categories (capitals, companies, historical events)
+- Each question includes 1 correct answer and 2 wrong answers
+- Answers are randomly shuffled for each question
 
 ## Deployment
 
