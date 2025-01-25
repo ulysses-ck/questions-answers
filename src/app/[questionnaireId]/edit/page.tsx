@@ -6,9 +6,16 @@ import { notFound } from "next/navigation";
 export default async function EditQuestionnairePage({
   params,
 }: {
-  params: { questionnaireId: string };
+  params: Promise<{ questionnaireId: string }>;
 }) {
-  const questionnaire = await getQuestionnaireById(parseInt(params.questionnaireId));
+  const questionnaireIdParam = (await params).questionnaireId;
+  const questionnaireId = Number(questionnaireIdParam);
+
+  if (isNaN(questionnaireId)) {
+    return <div>Invalid questionnaire id</div>;
+  }
+
+  const questionnaire = await getQuestionnaireById(questionnaireId);
 
   if (!questionnaire) {
     notFound();
