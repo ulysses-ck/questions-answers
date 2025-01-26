@@ -41,6 +41,13 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     
     if (!apiKey?.trim()) {
       setError("API key is required. Please provide a valid API key in the configuration.");
+      setLoading(false);
+      return [];
+    }
+
+    if (!model) {
+      setError("Please select a model in the configuration before generating questions.");
+      setLoading(false);
       return [];
     }
 
@@ -51,11 +58,11 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     setError(null);
     setProgress({ current: 0, total: count });
 
-    const geminiModel = createGeminiModel(apiKey, model, temperature);
-    const service = createGeminiQuestionnaireService(geminiModel, apiKey);
-    const newQuestions: Question[] = [];
-
     try {
+      const geminiModel = createGeminiModel(apiKey, model, temperature);
+      const service = createGeminiQuestionnaireService(geminiModel, apiKey);
+      const newQuestions: Question[] = [];
+
       for (let i = 0; i < count; i++) {
         // Add delay between requests (2 seconds)
         if (i > 0) {

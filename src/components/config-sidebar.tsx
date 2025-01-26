@@ -79,19 +79,20 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
 
       try {
         const fetchedModels = await listModels(apiKey);
-        setModels(Array.isArray(fetchedModels) ? fetchedModels : []);
-        setApiError(null);
+        if (Array.isArray(fetchedModels) && fetchedModels.length > 0) {
+          setModels(fetchedModels);
+          setApiError(null);
+        } else {
+          setModels([]);
+          setApiError('No models available. Please check your API key.');
+        }
       } catch (error) {
         console.error("Error fetching models:", error);
-        setModels([]); // Reset to empty array on error
+        setModels([]);
         if (error instanceof Error) {
-          if (error.message.includes('400') || error.message.includes('401')) {
-            setApiError('Invalid API key. Please check your key and try again.');
-          } else if (error.message.includes('429')) {
-            setApiError('Rate limit exceeded. Please try again later.');
-          } else {
-            setApiError('Failed to fetch models. Please check your connection and try again.');
-          }
+          setApiError(error.message);
+        } else {
+          setApiError('Failed to fetch models. Please check your connection and try again.');
         }
       }
     };
@@ -137,14 +138,32 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             isInvalid={!!apiError}
             errorMessage={apiError}
           />
+          {apiError && (
+            <div className="mt-2 p-3 bg-danger-50 dark:bg-danger-900/30 text-danger rounded-lg">
+              <p className="text-sm">
+                <strong>Configuration Error:</strong> {apiError}
+              </p>
+              <p className="text-xs mt-1">
+                To get a valid API key:
+                <ol className="list-decimal ml-4 mt-1">
+                  <li>Visit the <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="underline">Google AI Studio</a></li>
+                  <li>Create or select a project</li>
+                  <li>Generate an API key</li>
+                  <li>Copy and paste it here</li>
+                </ol>
+              </p>
+            </div>
+          )}
         </div>
         <Divider />
         <div>
           <Select
             label="Model"
-            placeholder="Select a model"
+            placeholder={apiError ? "Please fix API key first" : "Select a model"}
             value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
+            isDisabled={!!apiError}
+            className={apiError ? "opacity-50" : ""}
           >
             {models.length > 0 ? (
               models.map((model) => (

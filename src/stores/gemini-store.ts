@@ -86,16 +86,28 @@ export const useGeminiStore = create<GeminiState>()((set) => ({
     set((state) => {
       const updatedConfig = { ...state.config, ...newConfig }
       if (typeof window !== 'undefined') {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfig))
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfig))
+        } catch (error) {
+          console.error('Failed to save config:', error)
+        }
       }
-      return { config: updatedConfig }
+      return { 
+        config: updatedConfig,
+        error: null // Clear any previous errors when config changes
+      }
     }),
   setQuestions: (questions) => set({ questions }),
   addGeneratedQuestion: (question) => 
     set((state) => ({
-      generatedQuestions: [...state.generatedQuestions, question]
+      generatedQuestions: [...state.generatedQuestions, question],
+      error: null // Clear any previous errors when adding questions
     })),
-  clearQuestions: () => set({ questions: [], generatedQuestions: [] }),
+  clearQuestions: () => set({ 
+    questions: [], 
+    generatedQuestions: [],
+    error: null // Clear any previous errors when clearing questions
+  }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   setProgress: (progress) => set({ progress }),

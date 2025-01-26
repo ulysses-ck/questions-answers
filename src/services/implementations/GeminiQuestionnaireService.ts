@@ -53,9 +53,27 @@ Your task is to generate a question with 4 possible answers about the given topi
 Exactly one answer must be correct.`;
 
 export async function listModels(apiKey: string): Promise<Model[]> {
-  const response = await fetch(`${baseUrl}v1beta/models?key=${apiKey}`);
-  const data = (await response.json()) as ModelsResponse;
-  return data.models;
+  try {
+    const response = await fetch(`${baseUrl}v1beta/models?key=${apiKey}`);
+    
+    if (!response.ok) {
+      if (response.status === 400 || response.status === 401) {
+        throw new Error("Invalid API key. Please check your key and try again.");
+      } else if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+      }
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data = (await response.json()) as ModelsResponse;
+    return data.models;
+  } catch (error) {
+    console.error("Error fetching models:", error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch models. Please check your connection.");
+  }
 }
 
 export function createGeminiModel(
