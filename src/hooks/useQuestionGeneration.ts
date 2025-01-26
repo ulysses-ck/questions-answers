@@ -48,26 +48,22 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     const geminiModel = createGeminiModel(apiKey, model, temperature);
     const service = createGeminiQuestionnaireService(geminiModel, apiKey);
     const newQuestions: Question[] = [];
-    let attempts = 0;
-    const maxAttempts = count * 2; // Allow some retries for duplicates
 
     try {
-      while (newQuestions.length < count && attempts < maxAttempts) {
-        attempts++;
-        
+      for (let i = 0; i < count; i++) {
         // Add delay between requests (2 seconds)
-        if (attempts > 1) {
+        if (i > 0) {
           await delay(2000);
         }
 
         // Enhance prompt with previously generated questions
         const enhancedPrompt = `${prompt}\n\nPreviously generated questions (DO NOT REPEAT):\n${
-          generatedQuestions
-            .map((q, i) => `${i + 1}. ${q.question}`)
+          [...generatedQuestions, ...newQuestions]
+            .map((q, idx) => `${idx + 1}. ${q.question}`)
             .join('\n')
         }`;
 
-        console.log(`[Question Generation] Attempt ${attempts}/${maxAttempts}`);
+        console.log(`[Question Generation] Generating question ${i + 1}/${count}`);
         console.log("[Question Generation] Enhanced prompt:", enhancedPrompt);
 
         const result = await service.generateQuestion(enhancedPrompt);
@@ -76,7 +72,8 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
           console.log("[Question Generation] Received result:", result.question);
           
           if (isDuplicateQuestion(result, [...newQuestions, ...generatedQuestions])) {
-            console.log("[Question Generation] Duplicate question detected, retrying...");
+            console.log("[Question Generation] Duplicate question detected, skipping");
+            setError(`Question ${i + 1} was a duplicate. Some questions may have been skipped.`);
             continue;
           }
 
@@ -84,12 +81,8 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
           newQuestions.push(result);
           addGeneratedQuestion(result);
           setQuestions([...newQuestions]);
-          setProgress({ current: newQuestions.length, total: count });
+          setProgress({ current: i + 1, total: count });
         }
-      }
-
-      if (newQuestions.length < count) {
-        setError(`Could only generate ${newQuestions.length} unique questions after ${attempts} attempts`);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
