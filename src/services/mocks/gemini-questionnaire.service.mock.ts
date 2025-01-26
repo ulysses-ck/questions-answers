@@ -1,7 +1,7 @@
 import { GenerativeModel } from "@google/generative-ai";
 import { CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
 import { questionnaireInsertSchema, answerInsertSchema } from "@/db/schema";
-import { Model } from "@/types/gemini";
+import { Model, Question } from "@/types/gemini";
 import { faker } from "@faker-js/faker";
 import type { GeminiQuestionnaireService } from "@/services/implementations/GeminiQuestionnaireService";
 
@@ -67,9 +67,30 @@ async function mockGenerateQuestionnaire(
   return data;
 }
 
+async function mockGenerateQuestion(
+  _model: GenerativeModel,
+  topic: string
+): Promise<Question> {
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  const correctAnswerIndex = faker.number.int({ min: 0, max: 3 });
+  
+  const answers = Array.from({ length: 4 }, (_, index) => ({
+    text: faker.lorem.sentence(),
+    isCorrect: index === correctAnswerIndex
+  }));
+
+  return {
+    question: `${faker.word.words({ count: { min: 3, max: 8 } })} ${topic}?`,
+    answers
+  };
+}
+
 export function createMockGeminiQuestionnaireService(): GeminiQuestionnaireService {
   return {
     listModels: () => mockListModels("fake-api-key"),
     generateQuestionnaire: (topic: string) => mockGenerateQuestionnaire({} as GenerativeModel, topic),
+    generateQuestion: (topic: string) => mockGenerateQuestion({} as GenerativeModel, topic)
   };
 }

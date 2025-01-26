@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardBody, CardHeader } from "@heroui/react";
 import ConfigSidebar from "@/components/config-sidebar";
 import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import { Question } from "@/types/gemini";
@@ -9,6 +9,9 @@ import QuestionGenerationForm from "@/components/question-generation-form";
 
 export default function CreateQuestionnairePage() {
   const [config, setConfig] = useState({
+    // for testing and development
+    // apiKey: "mock-api-key",
+    // model: "gemini-1.5-flash-latest",
     apiKey: "",
     model: "",
     temperature: 0.7,
@@ -22,8 +25,10 @@ export default function CreateQuestionnairePage() {
         <ConfigSidebar onConfigChange={setConfig} />
         <div className="flex-1">
           <Card>
+            <CardHeader>
+              <h1 className="text-2xl font-bold">Create New Questionnaire</h1>
+            </CardHeader>
             <CardBody>
-              <h1 className="text-2xl font-bold mb-4">Create New Questionnaire</h1>
               {config.apiKey && config.model ? (
                 <div className="space-y-8">
                   <div>
@@ -49,7 +54,7 @@ export default function CreateQuestionnairePage() {
                         </button>
                       </div>
                       {questions.map((question, index) => (
-                        <Card key={index} className="bg-gray-50">
+                        <Card key={index}>
                           <CardBody>
                             <h3 className="font-semibold mb-2">{question.question}</h3>
                             <ul className="space-y-2">
@@ -57,7 +62,7 @@ export default function CreateQuestionnairePage() {
                                 <li
                                   key={answerIndex}
                                   className={`p-2 rounded ${
-                                    answer.isCorrect ? "bg-green-100" : "bg-white"
+                                    answer.isCorrect ? "bg-green-600/10" : ""
                                   }`}
                                 >
                                   {answer.text}
