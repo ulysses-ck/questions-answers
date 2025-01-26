@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Card, CardBody, Input, Textarea } from "@heroui/react";
+import { Button, Input, Textarea } from "@heroui/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Question } from "@/types/gemini";

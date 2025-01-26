@@ -28,7 +28,7 @@ export default function CreateQuestionnairePage() {
     temperature: 0.7,
   });
 
-  const [currentTopic, setCurrentTopic] = useState<string>("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [editedQuestions, setEditedQuestions] = useState<Record<number, EditedQuestion>>({});
   const { questions, isLoading, error, generateQuestions, clearQuestions, progress, setQuestions } = useQuestionGeneration(config);
 
@@ -48,7 +48,6 @@ export default function CreateQuestionnairePage() {
   };
 
   const handleGenerate = async (topic: string, count: number) => {
-    setCurrentTopic(topic);
     const result = await generateQuestions(topic, count);
     return result;
   };
