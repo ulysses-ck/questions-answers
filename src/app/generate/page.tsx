@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardBody, CardHeader } from "@heroui/react";
-import ConfigSidebar from "@/components/config-sidebar";
+import { Card, CardBody, CardHeader, Button } from "@heroui/react";
 import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import { Question } from "@/types/gemini";
 import QuestionGenerationForm from "@/components/question-generation-form";
 import GeminiQuestionnaireForm from "@/components/gemini-questionnaire-form";
 import { createQuestionnaire } from "@/server/actions/questionnaire.mutation";
+import ConfigSidebar from "@/components/config-sidebar";
 
 type EditedQuestion = Question & { isEdited?: boolean };
 type FormData = {
@@ -94,12 +94,14 @@ export default function CreateQuestionnairePage() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
                         <h2 className="text-xl font-semibold">Generated Questions</h2>
-                        <button
-                          onClick={clearQuestions}
-                          className="text-sm text-red-600"
+                        <Button
+                          color="danger"
+                          variant="light"
+                          size="sm"
+                          onPress={clearQuestions}
                         >
                           Clear All
-                        </button>
+                        </Button>
                       </div>
                       {questions.map((question, index) => (
                         <Card key={index}>
@@ -113,17 +115,27 @@ export default function CreateQuestionnairePage() {
                       ))}
                     </div>
                   )}
-                  {error && <p className="text-red-500 mt-4">{error}</p>}
+                  {error && (
+                    <Card>
+                      <CardBody>
+                        <p className="text-danger">{error}</p>
+                      </CardBody>
+                    </Card>
+                  )}
                   {isLoading && (
-                    <div className="text-gray-500 mt-4">
-                      <p>Generating questions... ({progress.current} of {progress.total})</p>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                        <div
-                          className="bg-primary h-2.5 rounded-full transition-all duration-500"
-                          style={{ width: `${(progress.current / progress.total) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
+                    <Card>
+                      <CardBody>
+                        <div className="space-y-2">
+                          <p>Generating questions... ({progress.current} of {progress.total})</p>
+                          <div className="w-full bg-default-100 rounded-full h-2">
+                            <div
+                              className="bg-primary h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
                   )}
                 </div>
               ) : (

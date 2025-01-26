@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardBody, CardHeader, Input, Select, SelectItem } from "@heroui/react";
+import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider } from "@heroui/react";
 import { Model } from "@/types/gemini";
 import { listModels } from "@/services/implementations/GeminiQuestionnaireService";
 
@@ -49,7 +49,7 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   }, [apiKey, selectedModel, temperature, onConfigChange]);
 
   return (
-    <Card className="w-80">
+    <Card className="w-80 h-fit sticky top-4">
       <CardHeader>
         <h2 className="text-xl font-semibold">Configuration</h2>
       </CardHeader>
@@ -58,23 +58,39 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
           <Input
             type="password"
             label="API Key"
+            placeholder="Enter your Gemini API key"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
+            className="w-full"
           />
         </div>
+        <Divider />
         <div>
           <Select
             label="Model"
+            placeholder="Select a model"
             value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
           >
-            {models.map((model) => (
-              <SelectItem key={model.name} value={model.name}>
-                {model.displayName}
-              </SelectItem>
-            ))}
+            {models.length > 0 ? (
+              models.map((model) => (
+                <SelectItem key={model.name} value={model.name}>
+                  {model.displayName}
+                </SelectItem>
+              ))
+            ) : (
+              <>
+                <SelectItem key="gemini-1.0-pro" value="gemini-1.0-pro">
+                  Gemini 1.0 Pro
+                </SelectItem>
+                <SelectItem key="gemini-1.5-pro" value="gemini-1.5-pro">
+                  Gemini 1.5 Pro
+                </SelectItem>
+              </>
+            )}
           </Select>
         </div>
+        <Divider />
         <div>
           <label className="block text-sm font-medium mb-2">
             Temperature: {temperature}
@@ -88,6 +104,11 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             onChange={(e) => setTemperature(Number(e.target.value))}
             className="w-full"
           />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>Precise (0)</span>
+            <span>Balanced (0.5)</span>
+            <span>Creative (1)</span>
+          </div>
         </div>
       </CardBody>
     </Card>
