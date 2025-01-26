@@ -5,6 +5,10 @@ interface GeminiConfig {
   apiKey: string
   model: string
   temperature: number
+  safetySettings: Array<{
+    category: string
+    threshold: string
+  }>
 }
 
 interface Progress {
@@ -26,12 +30,48 @@ interface GeminiState {
   setProgress: (progress: Progress) => void
 }
 
+const DEFAULT_CONFIG: GeminiConfig = {
+  apiKey: '',
+  model: '',
+  temperature: 0.3,
+  safetySettings: [
+    {
+      category: 'HARM_CATEGORY_HARASSMENT',
+      threshold: 'BLOCK_NONE'
+    },
+    {
+      category: 'HARM_CATEGORY_HATE_SPEECH',
+      threshold: 'BLOCK_NONE'
+    },
+    {
+      category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+      threshold: 'BLOCK_NONE'
+    },
+    {
+      category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+      threshold: 'BLOCK_NONE'
+    }
+  ]
+}
+
+const STORAGE_KEY = 'gemini-config'
+
+const getInitialConfig = (): GeminiConfig => {
+  if (typeof window === 'undefined') return DEFAULT_CONFIG
+  
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (!stored) return DEFAULT_CONFIG
+
+  try {
+    return JSON.parse(stored)
+  } catch (error) {
+    console.error('Failed to parse stored config:', error)
+    return DEFAULT_CONFIG
+  }
+}
+
 export const useGeminiStore = create<GeminiState>()((set) => ({
-  config: {
-    apiKey: '',
-    model: '',
-    temperature: 0.7,
-  },
+  config: getInitialConfig(),
   questions: [],
   isLoading: false,
   error: null,
@@ -40,9 +80,13 @@ export const useGeminiStore = create<GeminiState>()((set) => ({
     total: 0,
   },
   setConfig: (newConfig) => 
-    set((state) => ({ 
-      config: { ...state.config, ...newConfig } 
-    })),
+    set((state) => {
+      const updatedConfig = { ...state.config, ...newConfig }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfig))
+      }
+      return { config: updatedConfig }
+    }),
   setQuestions: (questions) => set({ questions }),
   clearQuestions: () => set({ questions: [] }),
   setLoading: (isLoading) => set({ isLoading }),
