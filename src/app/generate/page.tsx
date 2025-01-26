@@ -25,7 +25,10 @@ export default function CreateQuestionnairePage() {
   const progress = useGeminiProgress();
   const { setConfig, setQuestions } = useGeminiActions();
 
-  const { generateQuestions, clearQuestions } = useQuestionGeneration(config);
+  const { generateQuestions, clearQuestions } = useQuestionGeneration({
+    ...config,
+    systemPrompt: config.systemPrompt
+  });
 
   const handleQuestionEdit = async (index: number, editedQuestion: FormData) => {
     try {
@@ -42,8 +45,9 @@ export default function CreateQuestionnairePage() {
     }
   };
 
-  const handleGenerate = async (topic: string, count: number) => {
-    const result = await generateQuestions(topic, count);
+  const handleGenerate = async (topic: string, count: number, delay: number, systemPrompt: string) => {
+    setConfig({ ...config, systemPrompt });
+    const result = await generateQuestions(topic, count, delay);
     return result;
   };
 

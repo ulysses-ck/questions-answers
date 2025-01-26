@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 import { Question } from '@/types/gemini'
+import { DEFAULT_SYSTEM_PROMPT } from '@/services/implementations/GeminiQuestionnaireService'
 
 interface GeminiConfig {
   apiKey: string
   model: string
   temperature: number
+  systemPrompt?: string
   safetySettings: Array<{
     category: string
     threshold: string
@@ -36,6 +38,7 @@ const DEFAULT_CONFIG: GeminiConfig = {
   apiKey: '',
   model: '',
   temperature: 0.3,
+  systemPrompt: DEFAULT_SYSTEM_PROMPT,
   safetySettings: [
     {
       category: 'HARM_CATEGORY_HARASSMENT',

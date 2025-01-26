@@ -7,6 +7,7 @@ interface UseQuestionGenerationProps {
   apiKey: string;
   model: string;
   temperature: number;
+  systemPrompt?: string;
 }
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -17,7 +18,7 @@ const isDuplicateQuestion = (newQuestion: Question, existingQuestions: Question[
   );
 };
 
-export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestionGenerationProps) => {
+export const useQuestionGeneration = ({ apiKey, model, temperature, systemPrompt }: UseQuestionGenerationProps) => {
   const { 
     setQuestions, 
     setLoading, 
@@ -81,7 +82,7 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
         console.log(`[Question Generation] Generating question ${i + 1}/${count}`);
 
         try {
-          const result = await service.generateQuestion(enhancedPrompt);
+          const result = await service.generateQuestion(enhancedPrompt, systemPrompt);
           
           if (result) {
             console.log("[Question Generation] Received result:", result.question);

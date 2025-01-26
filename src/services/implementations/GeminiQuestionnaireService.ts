@@ -44,11 +44,11 @@ const responseSchema = {
 
 export interface GeminiQuestionnaireService {
   listModels: () => Promise<Model[]>;
-  generateQuestionnaire: (topic: string) => Promise<CreateQuestionnaireWithAnswers>;
-  generateQuestion: (topic: string) => Promise<Question>;
+  generateQuestionnaire: (topic: string, systemPrompt?: string) => Promise<CreateQuestionnaireWithAnswers>;
+  generateQuestion: (topic: string, systemPrompt?: string) => Promise<Question>;
 }
 
-const QUESTIONNAIRE_SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions.
+export const DEFAULT_SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions.
 Your task is to generate a question with 4 possible answers about the given topic.
 Exactly one answer must be correct.
 
@@ -130,12 +130,13 @@ export function createGeminiModel(
 
 async function generateQuestionnaire(
   model: GenerativeModel,
-  topic: string
+  topic: string,
+  systemPrompt: string = DEFAULT_SYSTEM_PROMPT
 ): Promise<CreateQuestionnaireWithAnswers> {
   try {
     const response = await model.generateContent({
       contents: [
-        { role: "user", parts: [{ text: QUESTIONNAIRE_SYSTEM_PROMPT }] },
+        { role: "user", parts: [{ text: systemPrompt }] },
         {
           role: "user",
           parts: [{ text: `Generate a multiple choice question about: ${topic}` }],
@@ -185,12 +186,12 @@ export function createGeminiQuestionnaireService(
 ): GeminiQuestionnaireService {
   return {
     listModels: () => listModels(apiKey),
-    generateQuestionnaire: (topic: string) => generateQuestionnaire(model, topic),
-    generateQuestion: async (topic: string) => {
+    generateQuestionnaire: (topic: string, systemPrompt?: string) => generateQuestionnaire(model, topic, systemPrompt),
+    generateQuestion: async (topic: string, systemPrompt: string = DEFAULT_SYSTEM_PROMPT) => {
       try {
         const response = await model.generateContent({
           contents: [
-            { role: "user", parts: [{ text: QUESTIONNAIRE_SYSTEM_PROMPT }] },
+            { role: "user", parts: [{ text: systemPrompt }] },
             {
               role: "user",
               parts: [{ text: topic }],
