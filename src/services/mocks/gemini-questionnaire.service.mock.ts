@@ -1,11 +1,11 @@
 import { GenerativeModel } from "@google/generative-ai";
 import { CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
 import { questionnaireInsertSchema, answerInsertSchema } from "@/db/schema";
-import { IModel } from "@/types/gemini";
+import { Model } from "@/types/gemini";
 import { faker } from "@faker-js/faker";
 import type { GeminiQuestionnaireService } from "@/services/implementations/GeminiQuestionnaireService";
 
-const MOCK_MODELS: IModel[] = [
+const MOCK_MODELS: Model[] = [
   {
     name: "gemini-pro",
     displayName: "Gemini Pro",
@@ -28,7 +28,7 @@ const MOCK_MODELS: IModel[] = [
   },
 ];
 
-async function mockListModels(_apiKey: string): Promise<IModel[]> {
+async function mockListModels(_apiKey: string): Promise<Model[]> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500));
   return MOCK_MODELS;
