@@ -7,6 +7,7 @@ import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import { Question } from "@/types/gemini";
 import QuestionGenerationForm from "@/components/question-generation-form";
 import GeminiQuestionnaireForm from "@/components/gemini-questionnaire-form";
+import { createQuestionnaire } from "@/server/actions/questionnaire.mutation";
 
 type EditedQuestion = Question & { isEdited?: boolean };
 type FormData = {
@@ -27,17 +28,27 @@ export default function CreateQuestionnairePage() {
     temperature: 0.7,
   });
 
+  const [currentTopic, setCurrentTopic] = useState<string>("");
   const [editedQuestions, setEditedQuestions] = useState<Record<number, EditedQuestion>>({});
-  const { questions, isLoading, error, generateQuestions, clearQuestions, progress } = useQuestionGeneration(config);
+  const { questions, isLoading, error, generateQuestions, clearQuestions, progress, setQuestions } = useQuestionGeneration(config);
 
-  const handleQuestionEdit = (index: number, editedQuestion: FormData) => {
-    setEditedQuestions(prev => ({
-      ...prev,
-      [index]: { ...editedQuestion, isEdited: true }
-    }));
+  const handleQuestionEdit = async (index: number, editedQuestion: FormData) => {
+    try {
+      const result = await createQuestionnaire(editedQuestion);
+      
+      if (result.success) {
+        // Only remove the question from local state
+        setQuestions(questions.filter((_, i) => i !== index));
+      } else {
+        console.error("Failed to save questionnaire");
+      }
+    } catch (error) {
+      console.error("Error saving questionnaire:", error);
+    }
   };
 
   const handleGenerate = async (topic: string, count: number) => {
+    setCurrentTopic(topic);
     const result = await generateQuestions(topic, count);
     return result;
   };

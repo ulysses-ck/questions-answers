@@ -64,6 +64,7 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     error,
     generateQuestions,
     clearQuestions,
+    setQuestions,
     progress: {
       current: currentQuestion,
       total: totalQuestions
