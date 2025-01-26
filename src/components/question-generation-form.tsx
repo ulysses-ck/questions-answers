@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, Textarea } from "@heroui/react";
+import { Button, Input, Textarea, Slider } from "@heroui/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Question } from "@/types/gemini";
@@ -10,7 +10,7 @@ import { Question } from "@/types/gemini";
 const formSchema = z.object({
   topic: z.string().min(1, "Topic is required"),
   count: z.number().min(1).max(10),
-  delay: z.coerce.number().min(0).max(7200),
+  delay: z.coerce.number().min(0).max(30000),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -39,10 +39,12 @@ export default function QuestionGenerationForm({
     defaultValues: {
       count: 1,
       topic: "Generate a multiple choice question about: ",
+      delay: 2000,
     },
   });
 
   const topic = watch("topic");
+  const delay = watch("delay");
 
   useEffect(() => {
     if (currentQuestions.length > 0) {
@@ -96,18 +98,28 @@ export default function QuestionGenerationForm({
 
       <div>
         <label htmlFor="delay" className="block text-sm font-medium text-gray-700">
-          Delay Between Questions (ms)
+          Delay Between Questions: {delay}ms
         </label>
-        <Input
-          id="delay"
-          type="number"
-          min={0}
-          max={7200}
-          placeholder="Default: 2000ms"
-          className="mt-1"
-          disabled={isLoading}
-          {...register("delay", { valueAsNumber: true })}
-        />
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-xs text-gray-500">0ms</span>
+          <Slider
+            id="delay"
+            aria-label="Delay between questions"
+            step={500}
+            maxValue={30000}
+            minValue={0}
+            value={delay}
+            onChange={(value) => setValue("delay", Number(value))}
+            className="flex-1"
+            isDisabled={isLoading}
+            marks={[
+              { value: 0, label: "No delay" },
+              { value: 2000, label: "Default" },
+              { value: 30000, label: "30s" }
+            ]}
+          />
+          <span className="text-xs text-gray-500">30000ms</span>
+        </div>
         {errors.delay && (
           <p className="mt-1 text-sm text-red-500">{errors.delay.message}</p>
         )}
