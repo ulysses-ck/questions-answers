@@ -66,14 +66,18 @@ export default function CreateQuestionnairePage() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex gap-4">
-        <ConfigSidebar onConfigChange={setConfig} />
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="w-full lg:w-80">
+          <ConfigSidebar onConfigChange={setConfig} />
+        </div>
         <div className="flex-1">
-          <Card>
-            <CardHeader>
-              <h1 className="text-2xl font-bold">Create New Questionnaire</h1>
+          <Card className="bg-white dark:bg-[#1a1a1a] shadow-md">
+            <CardHeader className="border-b border-gray-200 dark:border-gray-800">
+              <h1 className="text-2xl font-bold text-black dark:text-white">
+                Create New Questionnaire
+              </h1>
             </CardHeader>
-            <CardBody>
+            <CardBody className="p-6">
               {config.apiKey && config.model ? (
                 <div className="space-y-8">
                   <div>
@@ -83,7 +87,7 @@ export default function CreateQuestionnairePage() {
                       getTopicPrompt={getTopicPrompt}
                       currentQuestions={questions}
                     />
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                       Note: Gemini API has a rate limit of 15 requests per minute in the free tier.
                       A 2-second delay is added between requests to help manage this limit.
                     </p>
@@ -92,18 +96,19 @@ export default function CreateQuestionnairePage() {
                   {questions.length > 0 && (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-semibold">Generated Questions</h2>
+                        <h2 className="text-xl font-semibold text-black dark:text-white">Generated Questions</h2>
                         <Button
                           color="danger"
-                          variant="light"
+                          variant="flat"
                           size="sm"
+                          className="bg-white dark:bg-[#1a1a1a] text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
                           onPress={clearQuestions}
                         >
                           Clear All
                         </Button>
                       </div>
                       {questions.map((question, index) => (
-                        <Card key={index}>
+                        <Card key={index} className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800">
                           <CardBody>
                             <GeminiQuestionnaireForm
                               initialData={question}
@@ -115,20 +120,22 @@ export default function CreateQuestionnairePage() {
                     </div>
                   )}
                   {error && (
-                    <Card>
+                    <Card className="bg-white dark:bg-[#1a1a1a] border border-red-600">
                       <CardBody>
-                        <p className="text-danger">{error}</p>
+                        <p className="text-red-600">{error}</p>
                       </CardBody>
                     </Card>
                   )}
                   {isLoading && (
-                    <Card>
+                    <Card className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800">
                       <CardBody>
                         <div className="space-y-2">
-                          <p>Generating questions... ({progress.current} of {progress.total})</p>
-                          <div className="w-full bg-default-100 rounded-full h-2">
+                          <p className="text-black dark:text-white">
+                            Generating questions... ({progress.current} of {progress.total})
+                          </p>
+                          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
                             <div
-                              className="bg-primary h-2 rounded-full transition-all duration-500"
+                              className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                               style={{ width: `${(progress.current / progress.total) * 100}%` }}
                             />
                           </div>
@@ -138,7 +145,7 @@ export default function CreateQuestionnairePage() {
                   )}
                 </div>
               ) : (
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   Please configure your API key and model in the sidebar to start generating questions.
                 </p>
               )}

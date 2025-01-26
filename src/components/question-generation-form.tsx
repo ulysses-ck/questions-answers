@@ -94,7 +94,7 @@ export default function QuestionGenerationForm({
           key="advanced-config"
           aria-label="Advanced Configuration"
           title="Advanced Configuration"
-          className="bg-gray-800 dark:bg-gray-900 rounded-lg"
+          className="bg-gray-800 dark:bg-[#1a1a1a] rounded-lg"
         >
           <div className="space-y-4 p-4">
             <div>
