@@ -5,11 +5,17 @@ import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider } from "
 import { Model } from "@/types/gemini";
 import { listModels } from "@/services/implementations/GeminiQuestionnaireService";
 
+interface SafetySetting {
+  category: string;
+  threshold: string;
+}
+
 interface ConfigSidebarProps {
   onConfigChange: (config: {
     apiKey: string;
     model: string;
     temperature: number;
+    safetySettings: SafetySetting[];
   }) => void;
 }
 
@@ -18,6 +24,26 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState("");
   const [temperature, setTemperature] = useState(0.7);
+  const [safetySettings, setSafetySettings] = useState<SafetySetting[]>([
+    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+  ]);
+
+  const blockThresholds = [
+    { value: "BLOCK_NONE", label: "Block none" },
+    { value: "BLOCK_ONLY_HIGH", label: "Block high" },
+    { value: "BLOCK_MEDIUM_AND_ABOVE", label: "Block medium & high" },
+    { value: "BLOCK_LOW_AND_ABOVE", label: "Block low & above" },
+  ];
+
+  const harmCategories = {
+    HARM_CATEGORY_HARASSMENT: "Harassment content",
+    HARM_CATEGORY_HATE_SPEECH: "Hate speech and content that incites violence",
+    HARM_CATEGORY_SEXUALLY_EXPLICIT: "Sexually explicit content",
+    HARM_CATEGORY_DANGEROUS_CONTENT: "Dangerous content",
+  };
 
   useEffect(() => {
     // Load saved config from localStorage
@@ -27,6 +53,9 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
       setApiKey(config.apiKey);
       setSelectedModel(config.model);
       setTemperature(config.temperature);
+      if (config.safetySettings) {
+        setSafetySettings(config.safetySettings);
+      }
     }
   }, []);
 
@@ -43,10 +72,19 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
       apiKey,
       model: selectedModel,
       temperature,
+      safetySettings,
     };
     localStorage.setItem("gemini-config", JSON.stringify(config));
     onConfigChange(config);
-  }, [apiKey, selectedModel, temperature, onConfigChange]);
+  }, [apiKey, selectedModel, temperature, safetySettings, onConfigChange]);
+
+  const handleSafetySettingChange = (category: string, threshold: string) => {
+    setSafetySettings((prev) =>
+      prev.map((setting) =>
+        setting.category === category ? { ...setting, threshold } : setting
+      )
+    );
+  };
 
   return (
     <Card className="w-80 h-fit sticky top-4">
@@ -109,6 +147,30 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             <span>Balanced (0.5)</span>
             <span>Creative (1)</span>
           </div>
+        </div>
+        <Divider />
+        <div>
+          <h3 className="text-sm font-medium mb-4">Safety Settings</h3>
+          {safetySettings.map((setting) => (
+            <div key={setting.category} className="mb-4">
+              <label className="block text-sm mb-2">
+                {harmCategories[setting.category as keyof typeof harmCategories]}
+              </label>
+              <Select
+                value={setting.threshold}
+                onChange={(e) =>
+                  handleSafetySettingChange(setting.category, e.target.value)
+                }
+                className="w-full"
+              >
+                {blockThresholds.map((threshold) => (
+                  <SelectItem key={threshold.value} value={threshold.value}>
+                    {threshold.label}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+          ))}
         </div>
       </CardBody>
     </Card>
