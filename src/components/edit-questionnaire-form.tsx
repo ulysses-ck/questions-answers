@@ -95,7 +95,7 @@ export default function EditQuestionnaireForm({ questionnaire }: EditQuestionnai
           <h3 className="text-lg font-semibold">Answers</h3>
           <Button
             type="button"
-            onClick={() => append({ text: "", isCorrect: false })}
+            onPress={() => append({ text: "", isCorrect: false })}
           >
             Add Answer
           </Button>
@@ -131,7 +131,7 @@ export default function EditQuestionnaireForm({ questionnaire }: EditQuestionnai
                 type="button"
                 color="danger"
                 variant="light"
-                onClick={() => remove(index)}
+                onPress={() => remove(index)}
               >
                 Remove
               </Button>
@@ -144,7 +144,7 @@ export default function EditQuestionnaireForm({ questionnaire }: EditQuestionnai
         <Button
           type="button"
           variant="flat"
-          onClick={() => router.push("/list-questionnaire")}
+          onPress={() => router.push("/list-questionnaire")}
         >
           Cancel
         </Button>

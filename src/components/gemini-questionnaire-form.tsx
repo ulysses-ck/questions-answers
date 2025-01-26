@@ -73,7 +73,7 @@ export default function GeminiQuestionnaireForm({ initialData, onSave }: GeminiQ
           <h3 className="text-lg font-semibold">Answers</h3>
           <Button
             type="button"
-            onClick={() => append({ text: "", isCorrect: false })}
+            onPress={() => append({ text: "", isCorrect: false })}
           >
             Add Answer
           </Button>
@@ -103,7 +103,7 @@ export default function GeminiQuestionnaireForm({ initialData, onSave }: GeminiQ
               <Button
                 type="button"
                 color="danger"
-                onClick={() => remove(index)}
+                onPress={() => remove(index)}
               >
                 Remove
               </Button>

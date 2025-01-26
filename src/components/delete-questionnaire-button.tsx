@@ -33,7 +33,7 @@ export default function DeleteQuestionnaireButton({ id }: DeleteQuestionnaireBut
       <Button
         color="danger"
         variant="flat"
-        onClick={onOpen}
+        onPress={onOpen}
       >
         Delete
       </Button>
@@ -47,13 +47,13 @@ export default function DeleteQuestionnaireButton({ id }: DeleteQuestionnaireBut
           <ModalFooter>
             <Button
               variant="flat"
-              onClick={onClose}
+              onPress={onClose}
             >
               Cancel
             </Button>
             <Button
               color="danger"
-              onClick={handleDelete}
+              onPress={handleDelete}
               isLoading={isDeleting}
             >
               Delete
