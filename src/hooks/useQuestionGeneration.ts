@@ -66,8 +66,8 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
       const service = createGeminiQuestionnaireService(geminiModel, apiKey);
 
       for (let i = 0; i < count; i++) {
-        // Add configurable delay between requests
-        if (i > 0) {
+        // Add configurable delay between requests, skip if delay is 0
+        if (i > 0 && delayMs > 0) {
           await delay(delayMs);
         }
 
