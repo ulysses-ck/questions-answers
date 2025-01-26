@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, CardFooter, Divider } from "@heroui/react";
+import { Card, CardBody, CardHeader, CardFooter } from "@heroui/react";
 import { getQuestionnaires } from "@/server/queries/questionnaire.query";
 import Link from "next/link";
 import { Button } from "@heroui/button";

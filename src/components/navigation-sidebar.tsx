@@ -48,7 +48,6 @@ export function NavigationSidebar() {
         }
       >
         <DrawerContent className="bg-gray-800">
-          {(_) => (
             <>
               <DrawerHeader className="flex justify-between items-center border-b border-gray-800">
                 <h2 className="text-xl font-semibold text-white">Navigation</h2>
@@ -69,7 +68,6 @@ export function NavigationSidebar() {
                 </nav>
               </DrawerBody>
             </>
-          )}
         </DrawerContent>
       </Drawer>
     </>
