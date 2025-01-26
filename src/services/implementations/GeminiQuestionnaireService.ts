@@ -1,6 +1,8 @@
 import {
   GenerativeModel,
   GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
   ModelParams,
   SchemaType,
 } from "@google/generative-ai";
@@ -61,7 +63,11 @@ export function createGeminiModel(
   modelName: string,
   temperature?: number,
   topP?: number,
-  maxOutputTokens?: number
+  maxOutputTokens?: number,
+  safetySettings?: Array<{
+    category: HarmCategory;
+    threshold: HarmBlockThreshold;
+  }>
 ) {
   const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -74,6 +80,24 @@ export function createGeminiModel(
       responseMimeType: "application/json",
       responseSchema: responseSchema,
     },
+    safetySettings: safetySettings || [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      }
+    ]
   };
 
   return genAI.getGenerativeModel(modelParams);

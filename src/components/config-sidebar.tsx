@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider, Accordion, AccordionItem, Slider } from "@heroui/react";
 import { Model } from "@/types/gemini";
 import { listModels } from "@/services/implementations/GeminiQuestionnaireService";
+import { HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 interface SafetySetting {
-  category: string;
-  threshold: string;
+  category: HarmCategory;
+  threshold: HarmBlockThreshold;
 }
 
 interface ConfigSidebarProps {
@@ -25,32 +26,32 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   const [selectedModel, setSelectedModel] = useState("");
   const [temperature, setTemperature] = useState(0.7);
   const [safetySettings, setSafetySettings] = useState<SafetySetting[]>([
-    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
   ]);
 
   const blockThresholds = [
-    { value: "BLOCK_NONE", label: "Block none", sliderValue: 0 },
-    { value: "BLOCK_ONLY_HIGH", label: "Block high", sliderValue: 1 },
-    { value: "BLOCK_MEDIUM_AND_ABOVE", label: "Block medium & high", sliderValue: 2 },
-    { value: "BLOCK_LOW_AND_ABOVE", label: "Block low & above", sliderValue: 3 },
+    { value: HarmBlockThreshold.BLOCK_NONE, label: "Block none", sliderValue: 0 },
+    { value: HarmBlockThreshold.BLOCK_ONLY_HIGH, label: "Block high", sliderValue: 1 },
+    { value: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE, label: "Block medium & high", sliderValue: 2 },
+    { value: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE, label: "Block low & above", sliderValue: 3 },
   ];
 
   const getThresholdFromSliderValue = (value: number) => {
-    return blockThresholds.find(t => t.sliderValue === value)?.value || "BLOCK_NONE";
+    return blockThresholds.find(t => t.sliderValue === value)?.value || HarmBlockThreshold.BLOCK_NONE;
   };
 
-  const getSliderValueFromThreshold = (threshold: string) => {
+  const getSliderValueFromThreshold = (threshold: HarmBlockThreshold) => {
     return blockThresholds.find(t => t.value === threshold)?.sliderValue || 0;
   };
 
   const harmCategories = {
-    HARM_CATEGORY_HARASSMENT: "Harassment content",
-    HARM_CATEGORY_HATE_SPEECH: "Hate speech and content that incites violence",
-    HARM_CATEGORY_SEXUALLY_EXPLICIT: "Sexually explicit content",
-    HARM_CATEGORY_DANGEROUS_CONTENT: "Dangerous content",
+    [HarmCategory.HARM_CATEGORY_HARASSMENT]: "Harassment content",
+    [HarmCategory.HARM_CATEGORY_HATE_SPEECH]: "Hate speech and content that incites violence",
+    [HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT]: "Sexually explicit content",
+    [HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT]: "Dangerous content",
   };
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
     onConfigChange(config);
   }, [apiKey, selectedModel, temperature, safetySettings, onConfigChange]);
 
-  const handleSafetySettingChange = (category: string, sliderValue: number) => {
+  const handleSafetySettingChange = (category: HarmCategory, sliderValue: number) => {
     setSafetySettings((prev) =>
       prev.map((setting) =>
         setting.category === category
