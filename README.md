@@ -1,6 +1,6 @@
 # Questions & Answers
 
-A questionnaire application built with Next.js that allows users to create and answer questions.
+A quiz application built with Next.js that allows users to create and answer questions.
 
 ## Tech Stack
 
@@ -13,10 +13,13 @@ A questionnaire application built with Next.js that allows users to create and a
 - **Validation:** [Zod](https://zod.dev/)
 - **Animation:** [Framer Motion](https://www.framer.com/motion/)
 - **Runtime:** [React 19](https://react.dev/)
+- **AI Integration:** [Google Generative AI (Gemini)](https://ai.google.dev/)
 
 ## Features
 
-- 📝 Create and manage questionnaires
+- 📝 Create and manage quizzes
+- 🤖 AI-powered question generation using Google's Gemini
+- 🎯 Intelligent question suggestions based on topics
 - 💾 Persistent storage with PostgreSQL
 - 📱 Responsive design
 - ⚡ Fast page loads with Next.js

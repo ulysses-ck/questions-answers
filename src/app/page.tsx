@@ -11,14 +11,14 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8">
           <FeatureCard
-            title="Create & Manage"
-            description="Easily create and manage your questionnaires with our intuitive interface"
-            icon="📝"
+            title="AI-Powered Generation"
+            description="Generate intelligent questions using Google's Gemini AI technology"
+            icon="🤖"
           />
           <FeatureCard
-            title="Persistent Storage"
-            description="All your data is safely stored in PostgreSQL database"
-            icon="💾"
+            title="Smart Suggestions"
+            description="Get intelligent topic-based question suggestions to enhance your quizzes"
+            icon="🎯"
           />
           <FeatureCard
             title="Modern UI"
@@ -33,6 +33,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-8">Built With Modern Tech Stack</h2>
         <div className="flex flex-wrap justify-center gap-4">
           <TechBadge>Next.js 15.1</TechBadge>
+          <TechBadge>Google Gemini AI</TechBadge>
           <TechBadge>PostgreSQL</TechBadge>
           <TechBadge>Drizzle ORM</TechBadge>
           <TechBadge>TypeScript</TechBadge>
