@@ -58,10 +58,11 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     setError(null);
     setProgress({ current: 0, total: count });
 
+    const newQuestions: Question[] = [];
+
     try {
       const geminiModel = createGeminiModel(apiKey, model, temperature);
       const service = createGeminiQuestionnaireService(geminiModel, apiKey);
-      const newQuestions: Question[] = [];
 
       for (let i = 0; i < count; i++) {
         // Add delay between requests (2 seconds)
