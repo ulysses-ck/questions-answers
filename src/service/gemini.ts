@@ -4,23 +4,9 @@ import {
   ModelParams,
   type ResponseSchema,
 } from "@google/generative-ai";
+import { Model, ModelsResponse } from "@/types/gemini";
 
 const baseUrl = "https://generativelanguage.googleapis.com/";
-
-interface ModelsResponse {
-  models: Model[];
-}
-
-export interface Model {
-  name: string;
-  displayName: string;
-  description?: string;
-  supportedGenerationMethods?: string[];
-  temperature?: number;
-  topK?: number;
-  topP?: number;
-  outputTokenLimit?: number;
-}
 
 export async function listModels(apiKey: string): Promise<Model[]> {
   const response = await fetch(`${baseUrl}v1beta/models?key=${apiKey}`);

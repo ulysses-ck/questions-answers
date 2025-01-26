@@ -1,25 +1,9 @@
 import { GenerativeModel } from "@google/generative-ai";
 import { CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
 import { questionnaireInsertSchema, answerInsertSchema } from "@/db/schema";
+import { IModel, GeminiResponse } from "@/types/gemini";
 
-export interface IModel {
-  name: string;
-  displayName: string;
-  description: string;
-  supportedGenerationMethods: string[];
-  temperature?: number;
-  topK?: number;
-  topP?: number;
-  inputTokenLimit: number;
-  outputTokenLimit: number;
-}
-
-interface GeminiResponse {
-  message?: string;
-  data: CreateQuestionnaireWithAnswers;
-}
-
-interface GeminiQuestionnaireService {
+export interface GeminiQuestionnaireService {
   listModels: () => Promise<IModel[]>;
   generateQuestionnaire: (topic: string) => Promise<CreateQuestionnaireWithAnswers>;
 }
@@ -65,12 +49,12 @@ async function generateQuestionnaire(
 
   const response = result.response;
   const text = response.text();
-  const geminiResponse = JSON.parse(text) as GeminiResponse;
+  const geminiResponse = JSON.parse(text) as GeminiResponse<CreateQuestionnaireWithAnswers>;
   const data = geminiResponse.data;
 
   // Validate against our schema
   questionnaireInsertSchema.parse({ question: data.question });
-  data.answers.forEach(answer => {
+  data.answers.forEach((answer: { text: string; isCorrect: boolean }) => {
     answerInsertSchema.parse({
       text: answer.text,
       isCorrect: answer.isCorrect,
