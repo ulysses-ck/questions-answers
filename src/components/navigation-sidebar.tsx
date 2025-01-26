@@ -10,7 +10,6 @@ import {
   useDisclosure,
   Button
 } from '@heroui/react';
-import { useEffect } from 'react';
 
 const navigationItems = [
   { href: '/create', label: 'Create' },
