@@ -58,6 +58,13 @@ export default function QuestionGenerationForm({
     await onGenerate(data.topic, data.count, data.delay);
   };
 
+  const setRateLimitStrategy = () => {
+    // 4000ms delay ensures we stay well under 15 requests per minute
+    setValue("delay", 4000);
+    // Set to 5 questions to be conservative with the rate limit
+    setValue("count", 5);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
@@ -82,15 +89,27 @@ export default function QuestionGenerationForm({
         <label htmlFor="count" className="block text-sm font-medium text-gray-700">
           Number of Questions (1-10)
         </label>
-        <Input
-          id="count"
-          type="number"
-          min={1}
-          max={10}
-          className="mt-1"
-          disabled={isLoading}
-          {...register("count", { valueAsNumber: true })}
-        />
+        <div className="flex gap-2">
+          <Input
+            id="count"
+            type="number"
+            min={1}
+            max={10}
+            className="mt-1"
+            disabled={isLoading}
+            {...register("count", { valueAsNumber: true })}
+          />
+          <Button
+            type="button"
+            variant="bordered"
+            size="sm"
+            className="mt-1"
+            onClick={setRateLimitStrategy}
+            disabled={isLoading}
+          >
+            Set Rate Limit Strategy
+          </Button>
+        </div>
         {errors.count && (
           <p className="mt-1 text-sm text-red-500">{errors.count.message}</p>
         )}
