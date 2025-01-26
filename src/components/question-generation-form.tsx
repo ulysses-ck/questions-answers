@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Card, CardBody, Input, Textarea } from "@heroui/react";
 import { z } from "zod";
@@ -15,21 +15,41 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 interface QuestionGenerationFormProps {
-  onGenerate: (topic: string, count: number) => Promise<Question[]>;
+  onGenerate: (topicPrompt: string, count: number) => Promise<Question[]>;
   isLoading: boolean;
+  getTopicPrompt: (topic: string, previousQuestions: Question[]) => string;
+  currentQuestions: Question[];
 }
 
-export default function QuestionGenerationForm({ onGenerate, isLoading }: QuestionGenerationFormProps) {
+export default function QuestionGenerationForm({ 
+  onGenerate, 
+  isLoading, 
+  getTopicPrompt,
+  currentQuestions 
+}: QuestionGenerationFormProps) {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       count: 1,
+      topic: "Generate a multiple choice question about: ",
     },
   });
+
+  const topic = watch("topic");
+
+  useEffect(() => {
+    if (currentQuestions.length > 0) {
+      const basePrompt = topic.split("\n\nQuestions previously generated:")[0];
+      const updatedPrompt = getTopicPrompt(basePrompt, currentQuestions);
+      setValue("topic", updatedPrompt);
+    }
+  }, [currentQuestions, topic, getTopicPrompt, setValue]);
 
   const onSubmit = async (data: FormData) => {
     await onGenerate(data.topic, data.count);
@@ -43,9 +63,12 @@ export default function QuestionGenerationForm({ onGenerate, isLoading }: Questi
         </label>
         <Textarea
           id="topic"
-          placeholder="Enter a topic for the questions..."
+          placeholder="Enter a topic for the questions... (e.g. 'JavaScript Promises', 'React Hooks', etc.)"
+          value={topic}
+          onChange={(e) => setValue("topic", e.target.value)}
           className="mt-1"
-          {...register("topic")}
+          name="topic"
+          disabled={isLoading}
         />
         {errors.topic && (
           <p className="mt-1 text-sm text-red-500">{errors.topic.message}</p>
@@ -62,6 +85,7 @@ export default function QuestionGenerationForm({ onGenerate, isLoading }: Questi
           min={1}
           max={10}
           className="mt-1"
+          disabled={isLoading}
           {...register("count", { valueAsNumber: true })}
         />
         {errors.count && (

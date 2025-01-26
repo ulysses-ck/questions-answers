@@ -37,6 +37,24 @@ export default function CreateQuestionnairePage() {
     }));
   };
 
+  const handleGenerate = async (topic: string, count: number) => {
+    const result = await generateQuestions(topic, count);
+    return result;
+  };
+
+  const getTopicPrompt = (topic: string, previousQuestions: Question[]) => {
+    let prompt = topic;
+    
+    if (previousQuestions.length > 0) {
+      prompt += "\n\nQuestions previously generated:\n";
+      previousQuestions.forEach((q, index) => {
+        prompt += `${index + 1}. ${q.question}\n`;
+      });
+    }
+    
+    return prompt;
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex gap-4">
@@ -51,8 +69,10 @@ export default function CreateQuestionnairePage() {
                 <div className="space-y-8">
                   <div>
                     <QuestionGenerationForm
-                      onGenerate={generateQuestions}
+                      onGenerate={handleGenerate}
                       isLoading={isLoading}
+                      getTopicPrompt={getTopicPrompt}
+                      currentQuestions={questions}
                     />
                     <p className="text-sm text-gray-500 mt-2">
                       Note: Gemini API has a rate limit of 15 requests per minute in the free tier.

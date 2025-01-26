@@ -144,7 +144,7 @@ export function createGeminiQuestionnaireService(
             { role: "user", parts: [{ text: QUESTIONNAIRE_SYSTEM_PROMPT }] },
             {
               role: "user",
-              parts: [{ text: `Generate a multiple choice question about: ${topic}` }],
+              parts: [{ text: topic }],
             },
           ],
         });
