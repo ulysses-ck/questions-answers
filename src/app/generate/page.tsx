@@ -6,6 +6,16 @@ import ConfigSidebar from "@/components/config-sidebar";
 import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import { Question } from "@/types/gemini";
 import QuestionGenerationForm from "@/components/question-generation-form";
+import GeminiQuestionnaireForm from "@/components/gemini-questionnaire-form";
+
+type EditedQuestion = Question & { isEdited?: boolean };
+type FormData = {
+  question: string;
+  answers: Array<{
+    text: string;
+    isCorrect: boolean;
+  }>;
+};
 
 export default function CreateQuestionnairePage() {
   const [config, setConfig] = useState({
@@ -17,7 +27,15 @@ export default function CreateQuestionnairePage() {
     temperature: 0.7,
   });
 
+  const [editedQuestions, setEditedQuestions] = useState<Record<number, EditedQuestion>>({});
   const { questions, isLoading, error, generateQuestions, clearQuestions, progress } = useQuestionGeneration(config);
+
+  const handleQuestionEdit = (index: number, editedQuestion: FormData) => {
+    setEditedQuestions(prev => ({
+      ...prev,
+      [index]: { ...editedQuestion, isEdited: true }
+    }));
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -48,7 +66,7 @@ export default function CreateQuestionnairePage() {
                         <h2 className="text-xl font-semibold">Generated Questions</h2>
                         <button
                           onClick={clearQuestions}
-                          className="text-sm text-red-600 hover:text-red-800"
+                          className="text-sm text-red-600"
                         >
                           Clear All
                         </button>
@@ -56,22 +74,10 @@ export default function CreateQuestionnairePage() {
                       {questions.map((question, index) => (
                         <Card key={index}>
                           <CardBody>
-                            <h3 className="font-semibold mb-2">{question.question}</h3>
-                            <ul className="space-y-2">
-                              {question.answers.map((answer, answerIndex) => (
-                                <li
-                                  key={answerIndex}
-                                  className={`p-2 rounded ${
-                                    answer.isCorrect ? "bg-green-600/10" : ""
-                                  }`}
-                                >
-                                  {answer.text}
-                                  {answer.isCorrect && (
-                                    <span className="ml-2 text-green-600">(Correct)</span>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
+                            <GeminiQuestionnaireForm
+                              initialData={editedQuestions[index] || question}
+                              onSave={(data) => handleQuestionEdit(index, data)}
+                            />
                           </CardBody>
                         </Card>
                       ))}
@@ -83,7 +89,7 @@ export default function CreateQuestionnairePage() {
                       <p>Generating questions... ({progress.current} of {progress.total})</p>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
                         <div
-                          className="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
+                          className="bg-primary h-2.5 rounded-full transition-all duration-500"
                           style={{ width: `${(progress.current / progress.total) * 100}%` }}
                         ></div>
                       </div>

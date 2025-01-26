@@ -1,0 +1,126 @@
+"use client";
+
+import { Button } from "@heroui/button";
+import { Input, Switch } from "@heroui/react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { questionnaireInsertSchema, answerInsertSchema } from "@/db/schema";
+import { useState } from "react";
+import { Question } from "@/types/gemini";
+
+// Create a schema for the entire form
+const geminiQuestionnaireFormSchema = z.object({
+  question: questionnaireInsertSchema.shape.question,
+  answers: z.array(
+    z.object({
+      text: answerInsertSchema.shape.text,
+      isCorrect: answerInsertSchema.shape.isCorrect,
+    })
+  ).min(2, "At least two answers are required"),
+});
+
+type FormData = z.infer<typeof geminiQuestionnaireFormSchema>;
+
+interface GeminiQuestionnaireFormProps {
+  initialData: Question;
+  onSave: (data: FormData) => void;
+}
+
+export default function GeminiQuestionnaireForm({ initialData, onSave }: GeminiQuestionnaireFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(geminiQuestionnaireFormSchema),
+    defaultValues: {
+      question: initialData.question,
+      answers: initialData.answers,
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "answers",
+  });
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      setIsSubmitting(true);
+      onSave(data);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-2">
+        <Input
+          label="Question"
+          {...register("question")}
+          isInvalid={!!errors.question}
+          errorMessage={errors.question?.message}
+        />
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Answers</h3>
+          <Button
+            type="button"
+            onClick={() => append({ text: "", isCorrect: false })}
+          >
+            Add Answer
+          </Button>
+        </div>
+
+        {errors.answers?.root?.message && (
+          <p className="text-danger">{errors.answers.root.message}</p>
+        )}
+
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-4 items-start">
+            <div className="flex-1">
+              <Input
+                label={`Answer ${index + 1}`}
+                {...register(`answers.${index}.text`)}
+                isInvalid={!!errors.answers?.[index]?.text}
+                errorMessage={errors.answers?.[index]?.text?.message}
+              />
+            </div>
+            <Switch
+              {...register(`answers.${index}.isCorrect`)}
+              aria-label="Is correct answer"
+            >
+              Correct
+            </Switch>
+            {fields.length > 2 && (
+              <Button
+                type="button"
+                color="danger"
+                onClick={() => remove(index)}
+              >
+                Remove
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          color="primary"
+          isLoading={isSubmitting}
+        >
+          Save Changes
+        </Button>
+      </div>
+    </form>
+  );
+} 
