@@ -50,7 +50,14 @@ export interface GeminiQuestionnaireService {
 
 const QUESTIONNAIRE_SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions.
 Your task is to generate a question with 4 possible answers about the given topic.
-Exactly one answer must be correct.`;
+Exactly one answer must be correct.
+
+Important guidelines:
+1. Each question must be unique and substantially different from any previously generated questions
+2. Do not ask the same question with different wording
+3. If the topic is broad, explore different aspects or subtopics rather than focusing on one aspect
+4. Ensure questions test different knowledge areas within the topic
+5. Avoid questions that are just reformulations of each other`;
 
 export async function listModels(apiKey: string): Promise<Model[]> {
   try {
