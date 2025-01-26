@@ -28,6 +28,7 @@ const MOCK_MODELS: Model[] = [
   },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function mockListModels(_apiKey: string): Promise<Model[]> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500));

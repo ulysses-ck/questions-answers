@@ -1,5 +1,3 @@
-import { ModelParams, ResponseSchema } from "@google/generative-ai";
-
 export interface ModelsResponse {
   models: Model[];
 }
@@ -15,8 +13,6 @@ export interface Model {
   inputTokenLimit?: number;
   outputTokenLimit?: number;
 }
-
-
 
 export interface GeminiResponse<T> {
   message?: string;

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Card, CardBody, CardFooter, Input, Textarea } from "@heroui/react";
 import { generateQuestionnaire } from "@/server/actions/generate-questionnaire";
-import { createQuestionnaire, type CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
+import { createQuestionnaire } from "@/server/actions/questionnaire.mutation";
 
 const SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions. 
 Generate a question with 4 possible answers, where only one answer is correct.`;
@@ -29,19 +29,7 @@ interface GeneratedData {
   }>;
 }
 
-interface QuestionnaireResult {
-  success: boolean;
-  data?: {
-    question: string;
-    answers: Array<{
-      text: string;
-      isCorrect: boolean;
-    }>;
-  };
-}
-
 export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
-  const [preview, setPreview] = useState<GeneratedData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editedPreview, setEditedPreview] = useState<GeneratedData | null>(null);
@@ -63,7 +51,6 @@ export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
           question: result.data.question,
           answers: result.data.answers || []
         };
-        setPreview(questionnaireData);
         setEditedPreview(questionnaireData);
       }
     } catch (error) {
@@ -83,7 +70,6 @@ export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
       });
       
       if (result.success) {
-        setPreview(null);
         setEditedPreview(null);
       }
     } catch (error) {
@@ -168,7 +154,6 @@ export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
               color="danger"
               variant="light"
               onPress={() => {
-                setPreview(null);
                 setEditedPreview(null);
               }}
             >
