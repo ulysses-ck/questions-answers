@@ -45,6 +45,7 @@ export default function QuestionGenerationForm({
 
   const topic = watch("topic");
   const delay = watch("delay");
+  const count = watch("count");
 
   useEffect(() => {
     if (currentQuestions.length > 0) {
@@ -95,16 +96,17 @@ export default function QuestionGenerationForm({
             type="number"
             min={1}
             max={10}
+            value={count?.toString()}
+            onChange={(e) => setValue("count", Number(e.target.value))}
             className="mt-1"
             disabled={isLoading}
-            {...register("count", { valueAsNumber: true })}
           />
           <Button
             type="button"
             variant="bordered"
             size="sm"
             className="mt-1"
-            onClick={setRateLimitStrategy}
+            onPress={setRateLimitStrategy}
             disabled={isLoading}
           >
             Set Rate Limit Strategy
