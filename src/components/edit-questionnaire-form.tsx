@@ -69,7 +69,7 @@ export default function EditQuestionnaireForm({ questionnaire }: EditQuestionnai
       const result = await updateQuestionnaire(questionnaire.id, data);
       
       if (result.success) {
-        router.push("/list-questionnaire");
+        router.push("/list");
       } else {
         // Handle error
         console.error("Failed to update questionnaire");
@@ -144,7 +144,7 @@ export default function EditQuestionnaireForm({ questionnaire }: EditQuestionnai
         <Button
           type="button"
           variant="flat"
-          onPress={() => router.push("/list-questionnaire")}
+          onPress={() => router.push("/list")}
         >
           Cancel
         </Button>

@@ -46,7 +46,7 @@ export async function createQuestionnaire(data: CreateQuestionnaireWithAnswers) 
     // Insert all answers
     await db.insert(answerTable).values(answersData);
 
-    revalidatePath('/list-questionnaire');
+    revalidatePath('/list');
     return { success: true, data: newQuestionnaire };
   } catch (error) {
     console.error('Error creating questionnaire:', error);
@@ -121,7 +121,7 @@ export async function updateQuestionnaire(
         }
       }
 
-      revalidatePath('/list-questionnaire');
+      revalidatePath('/list');
       revalidatePath(`/${id}`);
       return { success: true };
     });
@@ -139,7 +139,7 @@ export async function deleteQuestionnaire(id: number) {
     // Then delete the questionnaire
     await db.delete(questionnaireTable).where(eq(questionnaireTable.id, id));
     
-    revalidatePath('/list-questionnaire');
+    revalidatePath('/list');
     return { success: true };
   } catch (error) {
     console.error('Error deleting questionnaire:', error);

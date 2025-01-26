@@ -57,7 +57,7 @@ export default function AnswersForm({ questionId, question, answers }: AnswersFo
     <div className="max-w-2xl mx-auto">
       <div className="mb-4">
         <Link 
-          href="/list-questionnaire" 
+          href="/list" 
           className="inline-flex items-center px-4 py-2 rounded-lg bg-default-100 hover:bg-default-200 transition-colors"
         >
           ← Back to List

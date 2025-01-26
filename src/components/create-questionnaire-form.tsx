@@ -53,7 +53,7 @@ export default function CreateQuestionnaireForm() {
       const result = await createQuestionnaire(data);
       
       if (result.success) {
-        router.push("/list-questionnaire");
+        router.push("/list");
       } else {
         // Handle error
         console.error("Failed to create questionnaire");
@@ -123,7 +123,7 @@ export default function CreateQuestionnaireForm() {
         <Button
           type="button"
           variant="flat"
-          onPress={() => router.push("/list-questionnaire")}
+          onPress={() => router.push("/list")}
         >
           Cancel
         </Button>
