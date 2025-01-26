@@ -25,6 +25,7 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState("");
   const [temperature, setTemperature] = useState(0.7);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [safetySettings, setSafetySettings] = useState<SafetySetting[]>([
     { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
     { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
@@ -69,11 +70,33 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   }, []);
 
   useEffect(() => {
-    if (apiKey) {
-      listModels(apiKey)
-        .then((fetchedModels) => setModels(fetchedModels as Model[]))
-        .catch(console.error);
-    }
+    const fetchModels = async () => {
+      if (!apiKey) {
+        setModels([]);
+        setApiError(null);
+        return;
+      }
+
+      try {
+        const fetchedModels = await listModels(apiKey);
+        setModels(Array.isArray(fetchedModels) ? fetchedModels : []);
+        setApiError(null);
+      } catch (error) {
+        console.error("Error fetching models:", error);
+        setModels([]); // Reset to empty array on error
+        if (error instanceof Error) {
+          if (error.message.includes('400') || error.message.includes('401')) {
+            setApiError('Invalid API key. Please check your key and try again.');
+          } else if (error.message.includes('429')) {
+            setApiError('Rate limit exceeded. Please try again later.');
+          } else {
+            setApiError('Failed to fetch models. Please check your connection and try again.');
+          }
+        }
+      }
+    };
+
+    fetchModels();
   }, [apiKey]);
 
   useEffect(() => {
@@ -111,6 +134,8 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             className="w-full"
+            isInvalid={!!apiError}
+            errorMessage={apiError}
           />
         </div>
         <Divider />

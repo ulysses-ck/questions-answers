@@ -38,8 +38,14 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
 
   const generateQuestions = async (prompt: string, count: number) => {
     console.log("[Question Generation] Starting generation process");
+    
+    if (!apiKey?.trim()) {
+      setError("API key is required. Please provide a valid API key in the configuration.");
+      return [];
+    }
+
     console.log("[Question Generation] Initial prompt:", prompt);
-    console.log("[Question Generation] Previously generated questions:", generatedQuestions.length);
+    console.log("[Question Generation] Previously generated questions:", generatedQuestions?.length || 0);
     
     setLoading(true);
     setError(null);
@@ -58,36 +64,59 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
 
         // Enhance prompt with previously generated questions
         const enhancedPrompt = `${prompt}\n\nPreviously generated questions (DO NOT REPEAT):\n${
-          [...generatedQuestions, ...newQuestions]
+          [...(generatedQuestions || []), ...newQuestions]
             .map((q, idx) => `${idx + 1}. ${q.question}`)
             .join('\n')
         }`;
 
         console.log(`[Question Generation] Generating question ${i + 1}/${count}`);
-        console.log("[Question Generation] Enhanced prompt:", enhancedPrompt);
 
-        const result = await service.generateQuestion(enhancedPrompt);
-        
-        if (result) {
-          console.log("[Question Generation] Received result:", result.question);
+        try {
+          const result = await service.generateQuestion(enhancedPrompt);
           
-          if (isDuplicateQuestion(result, [...newQuestions, ...generatedQuestions])) {
-            console.log("[Question Generation] Duplicate question detected, skipping");
-            setError(`Question ${i + 1} was a duplicate. Some questions may have been skipped.`);
+          if (result) {
+            console.log("[Question Generation] Received result:", result.question);
+            
+            if (isDuplicateQuestion(result, [...newQuestions, ...(generatedQuestions || [])])) {
+              console.log("[Question Generation] Duplicate question detected, skipping");
+              setError(`Question ${i + 1} was a duplicate. Some questions may have been skipped.`);
+              continue;
+            }
+
+            console.log("[Question Generation] New unique question added");
+            newQuestions.push(result);
+            addGeneratedQuestion(result);
+            setQuestions([...newQuestions]);
+            setProgress({ current: i + 1, total: count });
+          }
+        } catch (err) {
+          // Handle individual question generation error
+          console.error(`[Question Generation] Error generating question ${i + 1}:`, err);
+          const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+          
+          if (errorMessage.includes('400') || errorMessage.includes('401')) {
+            setError('Invalid API key. Please check your API key in the configuration and try again.');
+            break;
+          } else if (errorMessage.includes('429')) {
+            setError('API rate limit exceeded. Please wait a moment and try again.');
+            break;
+          } else {
+            setError(`Error generating question ${i + 1}: ${errorMessage}`);
             continue;
           }
-
-          console.log("[Question Generation] New unique question added");
-          newQuestions.push(result);
-          addGeneratedQuestion(result);
-          setQuestions([...newQuestions]);
-          setProgress({ current: i + 1, total: count });
         }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error("[Question Generation] Error:", errorMessage);
-      setError(`Error generating questions: ${errorMessage}. Note: Gemini API has a rate limit of 15 requests per minute in the free tier.`);
+      
+      if (errorMessage.includes('400') || errorMessage.includes('401')) {
+        setError('Invalid API key. Please check your API key in the configuration and try again.');
+      } else if (errorMessage.includes('429')) {
+        setError('API rate limit exceeded. Please wait a moment and try again.');
+      } else {
+        setError(`Error generating questions: ${errorMessage}. Note: Gemini API has a rate limit of 15 requests per minute in the free tier.`);
+      }
     } finally {
       setLoading(false);
       console.log("[Question Generation] Process completed. Generated questions:", newQuestions.length);

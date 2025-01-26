@@ -173,29 +173,46 @@ export function createGeminiQuestionnaireService(
           ],
         });
 
-        const text = response.response?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!text) {
-          throw new Error("No response from Gemini");
+        if (!response?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+          throw new Error("No valid response received from Gemini API. Please check your API key and try again.");
         }
 
-        const data = JSON.parse(text) as Question;
+        const text = response.response.candidates[0].content.parts[0].text;
 
-        // Validate the structure
-        if (!data.question || !Array.isArray(data.answers) || data.answers.length !== 4) {
-          throw new Error("Invalid response structure");
+        try {
+          const data = JSON.parse(text) as Question;
+
+          // Validate the structure
+          if (!data.question || !Array.isArray(data.answers) || data.answers.length !== 4) {
+            throw new Error("Invalid response structure: missing required fields. Please try again.");
+          }
+
+          // Ensure exactly one answer is correct
+          const correctAnswers = data.answers.filter((a) => a.isCorrect);
+          if (correctAnswers.length !== 1) {
+            throw new Error("Invalid response structure: must have exactly one correct answer. Please try again.");
+          }
+
+          return data;
+        } catch (parseError) {
+          console.error("Error parsing Gemini response:", parseError);
+          throw new Error("Failed to parse Gemini API response. Please try again.");
         }
-
-        // Ensure exactly one answer is correct
-        const correctAnswers = data.answers.filter((a) => a.isCorrect);
-        if (correctAnswers.length !== 1) {
-          throw new Error("There must be exactly one correct answer");
-        }
-
-        return data;
       } catch (error) {
         console.error("Error generating question:", error);
-        throw new Error("Failed to generate valid question");
+        
+        // Handle specific API errors
+        if (error instanceof Error) {
+          if (error.message.includes('400')) {
+            throw new Error("Invalid API request. Please check your API key in the configuration.");
+          } else if (error.message.includes('401')) {
+            throw new Error("Invalid or missing API key. Please check your API key in the configuration.");
+          } else if (error.message.includes('429')) {
+            throw new Error("API rate limit exceeded. Please wait a moment before trying again.");
+          }
+        }
+        
+        throw new Error("Failed to generate valid question. Please try again.");
       }
     },
   };
