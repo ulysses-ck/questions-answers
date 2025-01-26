@@ -122,7 +122,7 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   };
 
   return (
-    <Card className="w-80 h-fit sticky top-4">
+    <Card className="h-fit sticky top-4">
       <CardHeader>
         <h2 className="text-xl font-semibold">Configuration</h2>
       </CardHeader>
