@@ -6,7 +6,7 @@ import {
 } from "@google/generative-ai";
 import { CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
 import { questionnaireInsertSchema, answerInsertSchema } from "@/db/schema";
-import { Model, ModelsResponse } from "@/types/gemini";
+import { Model, ModelsResponse, Question } from "@/types/gemini";
 
 export const baseUrl = "https://generativelanguage.googleapis.com/";
 
@@ -43,6 +43,7 @@ const responseSchema = {
 export interface GeminiQuestionnaireService {
   listModels: () => Promise<Model[]>;
   generateQuestionnaire: (topic: string) => Promise<CreateQuestionnaireWithAnswers>;
+  generateQuestion: (topic: string) => Promise<Question>;
 }
 
 const QUESTIONNAIRE_SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions.
@@ -136,5 +137,42 @@ export function createGeminiQuestionnaireService(
   return {
     listModels: () => listModels(apiKey),
     generateQuestionnaire: (topic: string) => generateQuestionnaire(model, topic),
+    generateQuestion: async (topic: string) => {
+      try {
+        const response = await model.generateContent({
+          contents: [
+            { role: "user", parts: [{ text: QUESTIONNAIRE_SYSTEM_PROMPT }] },
+            {
+              role: "user",
+              parts: [{ text: `Generate a multiple choice question about: ${topic}` }],
+            },
+          ],
+        });
+
+        const text = response.response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!text) {
+          throw new Error("No response from Gemini");
+        }
+
+        const data = JSON.parse(text) as Question;
+
+        // Validate the structure
+        if (!data.question || !Array.isArray(data.answers) || data.answers.length !== 4) {
+          throw new Error("Invalid response structure");
+        }
+
+        // Ensure exactly one answer is correct
+        const correctAnswers = data.answers.filter((a) => a.isCorrect);
+        if (correctAnswers.length !== 1) {
+          throw new Error("There must be exactly one correct answer");
+        }
+
+        return data;
+      } catch (error) {
+        console.error("Error generating question:", error);
+        throw new Error("Failed to generate valid question");
+      }
+    },
   };
 }

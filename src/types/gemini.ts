@@ -17,4 +17,12 @@ export interface Model {
 export interface GeminiResponse<T> {
   message?: string;
   data: T;
+}
+
+export interface Question {
+  question: string;
+  answers: Array<{
+    text: string;
+    isCorrect: boolean;
+  }>;
 } 
