@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardBody, CardHeader, Button } from "@heroui/react";
-import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import { Question } from "@/types/gemini";
 import QuestionGenerationForm from "@/components/question-generation-form";
 import GeminiQuestionnaireForm from "@/components/gemini-questionnaire-form";
 import { createQuestionnaire } from "@/server/actions/questionnaire.mutation";
 import ConfigSidebar from "@/components/config-sidebar";
+import { useGeminiConfig, useGeminiQuestions, useGeminiLoading, useGeminiError, useGeminiProgress, useGeminiActions } from "@/providers/gemini-provider";
+import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 
 type FormData = {
   question: string;
@@ -18,16 +18,14 @@ type FormData = {
 };
 
 export default function CreateQuestionnairePage() {
-  const [config, setConfig] = useState({
-    // for testing and development
-    // apiKey: "mock-api-key",
-    // model: "gemini-1.5-flash-latest",
-    apiKey: "",
-    model: "",
-    temperature: 0.7,
-  });
+  const config = useGeminiConfig();
+  const questions = useGeminiQuestions();
+  const isLoading = useGeminiLoading();
+  const error = useGeminiError();
+  const progress = useGeminiProgress();
+  const { setConfig, setQuestions } = useGeminiActions();
 
-  const { questions, isLoading, error, generateQuestions, clearQuestions, progress, setQuestions } = useQuestionGeneration(config);
+  const { generateQuestions, clearQuestions } = useQuestionGeneration(config);
 
   const handleQuestionEdit = async (index: number, editedQuestion: FormData) => {
     try {
