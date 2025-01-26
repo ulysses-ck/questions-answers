@@ -38,7 +38,7 @@ export function NavigationSidebar() {
         size="sm"
         backdrop='blur'
       >
-        <DrawerContent className="bg-gray-900">
+        <DrawerContent className="bg-gray-800">
           {(onClose) => (
             <>
               <DrawerHeader className="flex justify-between items-center border-b border-gray-800">

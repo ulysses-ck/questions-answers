@@ -30,7 +30,7 @@ export default async function ListQuestionnairePage() {
 
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {questionnaires.map((questionnaire) => (
-                    <Card key={questionnaire.id} className="hover:shadow-lg transition-shadow bg-white dark:bg-[#1a1a1a]">
+                    <Card key={questionnaire.id} className="hover:shadow-lg transition-shadow bg-white dark:bg-gray-800">
                         <CardHeader className="flex gap-3 border-b border-gray-200 dark:border-gray-800">
                             <div className="flex flex-col flex-grow">
                                 <p className="text-sm text-gray-500 dark:text-gray-400">Question #{questionnaire.id}</p>
@@ -77,7 +77,7 @@ export default async function ListQuestionnairePage() {
 
                 {questionnaires.length === 0 && (
                     <div className="col-span-full">
-                        <Card className="bg-white dark:bg-[#1a1a1a]">
+                        <Card className="bg-white dark:bg-gray-800">
                             <CardBody>
                                 <p className="text-center text-gray-500 dark:text-gray-400">No questionnaires found</p>
                             </CardBody>

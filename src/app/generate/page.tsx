@@ -71,7 +71,7 @@ export default function CreateQuestionnairePage() {
           <ConfigSidebar onConfigChange={setConfig} />
         </div>
         <div className="flex-1">
-          <Card className="bg-white dark:bg-[#1a1a1a] shadow-md">
+          <Card className="bg-white dark:bg-gray-800 shadow-md">
             <CardHeader className="border-b border-gray-200 dark:border-gray-800">
               <h1 className="text-2xl font-bold text-black dark:text-white">
                 Create New Questionnaire
@@ -101,14 +101,14 @@ export default function CreateQuestionnairePage() {
                           color="danger"
                           variant="flat"
                           size="sm"
-                          className="bg-white dark:bg-[#1a1a1a] text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+                          className="bg-white dark:bg-gray-800 text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
                           onPress={clearQuestions}
                         >
                           Clear All
                         </Button>
                       </div>
                       {questions.map((question, index) => (
-                        <Card key={index} className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800">
+                        <Card key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
                           <CardBody>
                             <GeminiQuestionnaireForm
                               initialData={question}
@@ -120,14 +120,14 @@ export default function CreateQuestionnairePage() {
                     </div>
                   )}
                   {error && (
-                    <Card className="bg-white dark:bg-[#1a1a1a] border border-red-600">
+                    <Card className="bg-white dark:bg-gray-800 border border-red-600">
                       <CardBody>
                         <p className="text-red-600">{error}</p>
                       </CardBody>
                     </Card>
                   )}
                   {isLoading && (
-                    <Card className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800">
+                    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
                       <CardBody>
                         <div className="space-y-2">
                           <p className="text-black dark:text-white">
