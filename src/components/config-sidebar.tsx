@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider, Accordion, AccordionItem } from "@heroui/react";
+import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider, Accordion, AccordionItem, Slider } from "@heroui/react";
 import { Model } from "@/types/gemini";
 import { listModels } from "@/services/implementations/GeminiQuestionnaireService";
 
@@ -32,11 +32,19 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
   ]);
 
   const blockThresholds = [
-    { value: "BLOCK_NONE", label: "Block none" },
-    { value: "BLOCK_ONLY_HIGH", label: "Block high" },
-    { value: "BLOCK_MEDIUM_AND_ABOVE", label: "Block medium & high" },
-    { value: "BLOCK_LOW_AND_ABOVE", label: "Block low & above" },
+    { value: "BLOCK_NONE", label: "Block none", sliderValue: 0 },
+    { value: "BLOCK_ONLY_HIGH", label: "Block high", sliderValue: 1 },
+    { value: "BLOCK_MEDIUM_AND_ABOVE", label: "Block medium & high", sliderValue: 2 },
+    { value: "BLOCK_LOW_AND_ABOVE", label: "Block low & above", sliderValue: 3 },
   ];
+
+  const getThresholdFromSliderValue = (value: number) => {
+    return blockThresholds.find(t => t.sliderValue === value)?.value || "BLOCK_NONE";
+  };
+
+  const getSliderValueFromThreshold = (threshold: string) => {
+    return blockThresholds.find(t => t.value === threshold)?.sliderValue || 0;
+  };
 
   const harmCategories = {
     HARM_CATEGORY_HARASSMENT: "Harassment content",
@@ -78,10 +86,12 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
     onConfigChange(config);
   }, [apiKey, selectedModel, temperature, safetySettings, onConfigChange]);
 
-  const handleSafetySettingChange = (category: string, threshold: string) => {
+  const handleSafetySettingChange = (category: string, sliderValue: number) => {
     setSafetySettings((prev) =>
       prev.map((setting) =>
-        setting.category === category ? { ...setting, threshold } : setting
+        setting.category === category
+          ? { ...setting, threshold: getThresholdFromSliderValue(sliderValue) }
+          : setting
       )
     );
   };
@@ -133,20 +143,20 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
           <label className="block text-sm font-medium mb-2">
             Temperature: {temperature}
           </label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
+          <Slider 
+            aria-label="Temperature"
+            step={0.1}
+            maxValue={1}
+            minValue={0}
             value={temperature}
-            onChange={(e) => setTemperature(Number(e.target.value))}
-            className="w-full"
+            onChange={(value) => setTemperature(Number(value))}
+            className="max-w-md"
+            marks={[
+              { value: 0, label: "Precise" },
+              { value: 0.5, label: "Balanced" },
+              { value: 1, label: "Creative" }
+            ]}
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>Precise (0)</span>
-            <span>Balanced (0.5)</span>
-            <span>Creative (1)</span>
-          </div>
         </div>
         <Divider />
         <Accordion>
@@ -164,23 +174,25 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             </div>
             <h4 className="text-sm font-medium mb-4">Safety Settings</h4>
             {safetySettings.map((setting) => (
-              <div key={setting.category} className="mb-4">
+              <div key={setting.category} className="mb-6">
                 <label className="block text-sm mb-2">
                   {harmCategories[setting.category as keyof typeof harmCategories]}
                 </label>
-                <Select
-                  value={setting.threshold}
-                  onChange={(e) =>
-                    handleSafetySettingChange(setting.category, e.target.value)
-                  }
-                  className="w-full"
-                >
-                  {blockThresholds.map((threshold) => (
-                    <SelectItem key={threshold.value} value={threshold.value}>
-                      {threshold.label}
-                    </SelectItem>
-                  ))}
-                </Select>
+                <Slider
+                  aria-label={harmCategories[setting.category as keyof typeof harmCategories]}
+                  step={1}
+                  maxValue={3}
+                  minValue={0}
+                  value={getSliderValueFromThreshold(setting.threshold)}
+                  onChange={(value) => handleSafetySettingChange(setting.category, Number(value))}
+                  className="max-w-md"
+                  marks={[
+                    { value: 0, label: "None" },
+                    { value: 1, label: "High" },
+                    { value: 2, label: "Medium+" },
+                    { value: 3, label: "Low+" }
+                  ]}
+                />
               </div>
             ))}
           </AccordionItem>
