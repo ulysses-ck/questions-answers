@@ -169,7 +169,7 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
             <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-4">
               <p className="text-xs text-blue-800 dark:text-blue-200">
                 You are responsible for ensuring that safety settings comply with your intended use case.
-                Adjusting these settings may affect the model's filtering of potentially harmful content.
+                Adjusting these settings may affect the model&apos;s filtering of potentially harmful content.
                 Please use responsibly.
               </p>
             </div>
