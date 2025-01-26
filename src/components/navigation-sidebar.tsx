@@ -22,24 +22,28 @@ export function NavigationSidebar() {
 
   return (
     <>
-      <button
-        onClick={onOpen}
-        className="fixed top-4 left-4 p-2 text-gray-300 hover:text-white z-50"
-        aria-label="Open menu"
-      >
-        <Menu size={24} />
-      </button>
+      <div className="sticky top-0 left-0 lg:fixed z-50 flex items-center justify-between gap-2 p-3">
+        <button
+          onClick={onOpen}
+          className="text-gray-300 hover:text-white z-50"
+          aria-label="Open menu"
+        >
+          <Menu size={28} />
+        </button>
 
-      <Drawer 
-        isOpen={isOpen} 
-        onOpenChange={onOpenChange} 
-        placement="left" 
+        <h2 className="text-xl font-semibold text-white lg:hidden">Quiz App</h2>
+      </div>
+
+      <Drawer
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="left"
         size="sm"
         backdrop='blur'
         closeButton={
-          <Button 
+          <Button
             isIconOnly
-            variant="light" 
+            variant="light"
             onPress={onClose}
             className="text-gray-300 hover:text-white"
           >
@@ -48,26 +52,26 @@ export function NavigationSidebar() {
         }
       >
         <DrawerContent className="bg-gray-800">
-            <>
-              <DrawerHeader className="flex justify-between items-center border-b border-gray-800">
-                <h2 className="text-xl font-semibold text-white">Navigation</h2>
-              </DrawerHeader>
-              <DrawerBody>
-                <nav>
-                  <ul className="space-y-2">
-                    {navigationItems.map((item) => (
-                      <li key={item.href}>
-                        <ActiveLink href={item.href}>
-                          <button className="w-full h-full" type="button" onClick={onClose}>
-                            {item.label}
-                          </button>
-                        </ActiveLink>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </DrawerBody>
-            </>
+          <>
+            <DrawerHeader className="flex justify-between items-center border-b border-gray-800">
+              <h2 className="text-xl font-semibold text-white">Navigation</h2>
+            </DrawerHeader>
+            <DrawerBody>
+              <nav>
+                <ul className="space-y-2">
+                  {navigationItems.map((item) => (
+                    <li key={item.href}>
+                      <ActiveLink href={item.href}>
+                        <button className="w-full h-full" type="button" onClick={onClose}>
+                          {item.label}
+                        </button>
+                      </ActiveLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </DrawerBody>
+          </>
         </DrawerContent>
       </Drawer>
     </>
