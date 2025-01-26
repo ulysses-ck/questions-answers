@@ -57,7 +57,7 @@ export default function CreateQuestionnairePage() {
     let prompt = topic;
     
     if (previousQuestions.length > 0) {
-      prompt += "\n\nQuestions previously generated:\n";
+      prompt += "\n\nQuestions previously generated, do not repeat them:\n";
       previousQuestions.forEach((q, index) => {
         prompt += `${index + 1}. ${q.question}\n`;
       });

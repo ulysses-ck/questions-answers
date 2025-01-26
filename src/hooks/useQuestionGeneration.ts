@@ -18,6 +18,8 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
   const [totalQuestions, setTotalQuestions] = useState(0);
 
   const generateQuestions = async (prompt: string, count: number) => {
+    console.log("Generating questions...");
+    console.log("Prompt:", prompt);
     setIsLoading(true);
     setError(null);
     setCurrentQuestion(0);

@@ -45,7 +45,7 @@ export default function QuestionGenerationForm({
 
   useEffect(() => {
     if (currentQuestions.length > 0) {
-      const basePrompt = topic.split("\n\nQuestions previously generated:")[0];
+      const basePrompt = topic.split("\n\nQuestions previously generated, do not repeat them:")[0];
       const updatedPrompt = getTopicPrompt(basePrompt, currentQuestions);
       setValue("topic", updatedPrompt);
     }
