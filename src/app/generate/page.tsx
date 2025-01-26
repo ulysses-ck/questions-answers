@@ -9,7 +9,6 @@ import GeminiQuestionnaireForm from "@/components/gemini-questionnaire-form";
 import { createQuestionnaire } from "@/server/actions/questionnaire.mutation";
 import ConfigSidebar from "@/components/config-sidebar";
 
-type EditedQuestion = Question & { isEdited?: boolean };
 type FormData = {
   question: string;
   answers: Array<{
@@ -28,8 +27,6 @@ export default function CreateQuestionnairePage() {
     temperature: 0.7,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [editedQuestions, setEditedQuestions] = useState<Record<number, EditedQuestion>>({});
   const { questions, isLoading, error, generateQuestions, clearQuestions, progress, setQuestions } = useQuestionGeneration(config);
 
   const handleQuestionEdit = async (index: number, editedQuestion: FormData) => {
@@ -107,7 +104,7 @@ export default function CreateQuestionnairePage() {
                         <Card key={index}>
                           <CardBody>
                             <GeminiQuestionnaireForm
-                              initialData={editedQuestions[index] || question}
+                              initialData={question}
                               onSave={(data) => handleQuestionEdit(index, data)}
                             />
                           </CardBody>
