@@ -36,7 +36,7 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
     }))
   );
 
-  const generateQuestions = async (prompt: string, count: number) => {
+  const generateQuestions = async (prompt: string, count: number, delayMs: number = 2000) => {
     console.log("[Question Generation] Starting generation process");
     
     if (!apiKey?.trim()) {
@@ -53,6 +53,7 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
 
     console.log("[Question Generation] Initial prompt:", prompt);
     console.log("[Question Generation] Previously generated questions:", generatedQuestions?.length || 0);
+    console.log("[Question Generation] Using delay:", delayMs, "ms");
     
     setLoading(true);
     setError(null);
@@ -65,9 +66,9 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
       const service = createGeminiQuestionnaireService(geminiModel, apiKey);
 
       for (let i = 0; i < count; i++) {
-        // Add delay between requests (2 seconds)
+        // Add configurable delay between requests
         if (i > 0) {
-          await delay(2000);
+          await delay(delayMs);
         }
 
         // Enhance prompt with previously generated questions

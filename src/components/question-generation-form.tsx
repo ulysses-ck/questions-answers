@@ -10,12 +10,13 @@ import { Question } from "@/types/gemini";
 const formSchema = z.object({
   topic: z.string().min(1, "Topic is required"),
   count: z.number().min(1).max(10),
+  delay: z.coerce.number().min(0).max(7200),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 interface QuestionGenerationFormProps {
-  onGenerate: (topicPrompt: string, count: number) => Promise<Question[]>;
+  onGenerate: (topicPrompt: string, count: number, delay: number) => Promise<Question[]>;
   isLoading: boolean;
   getTopicPrompt: (topic: string, previousQuestions: Question[]) => string;
   currentQuestions: Question[];
@@ -52,7 +53,7 @@ export default function QuestionGenerationForm({
   }, [currentQuestions, topic, getTopicPrompt, setValue]);
 
   const onSubmit = async (data: FormData) => {
-    await onGenerate(data.topic, data.count);
+    await onGenerate(data.topic, data.count, data.delay);
   };
 
   return (
@@ -90,6 +91,25 @@ export default function QuestionGenerationForm({
         />
         {errors.count && (
           <p className="mt-1 text-sm text-red-500">{errors.count.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="delay" className="block text-sm font-medium text-gray-700">
+          Delay Between Questions (ms)
+        </label>
+        <Input
+          id="delay"
+          type="number"
+          min={0}
+          max={7200}
+          placeholder="Default: 2000ms"
+          className="mt-1"
+          disabled={isLoading}
+          {...register("delay", { valueAsNumber: true })}
+        />
+        {errors.delay && (
+          <p className="mt-1 text-sm text-red-500">{errors.delay.message}</p>
         )}
       </div>
 
