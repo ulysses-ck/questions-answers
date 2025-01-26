@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Card, CardBody, CardFooter, Input, Textarea } from "@heroui/react";
-import { generateAndSaveQuestionnaire } from "@/server/actions/generate-questionnaire";
-import { CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
+import { generateQuestionnaire } from "@/server/actions/generate-questionnaire";
+import { createQuestionnaire, type CreateQuestionnaireWithAnswers } from "@/server/actions/questionnaire.mutation";
 
 const SYSTEM_PROMPT = `You are a helpful assistant that generates multiple choice questions. 
 Generate a question with 4 possible answers, where only one answer is correct.`;
@@ -51,12 +51,12 @@ export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
   const onGenerate = async (data: FormData) => {
     try {
       setIsLoading(true);
-      const result = await generateAndSaveQuestionnaire(
+      const result = await generateQuestionnaire(
         config.apiKey,
         config.model,
         data.topic,
         config.temperature
-      ) as QuestionnaireResult;
+      );
       
       if (result.success && result.data) {
         const questionnaireData: GeneratedData = {
@@ -77,13 +77,12 @@ export default function QuestionnaireForm({ config }: QuestionnaireFormProps) {
     if (!editedPreview) return;
     try {
       setIsSaving(true);
-      const result = await generateAndSaveQuestionnaire(
-        config.apiKey,
-        config.model,
-        editedPreview.question,
-        config.temperature
-      );
-      if ('success' in result && result.success) {
+      const result = await createQuestionnaire({
+        question: editedPreview.question,
+        answers: editedPreview.answers
+      });
+      
+      if (result.success) {
         setPreview(null);
         setEditedPreview(null);
       }

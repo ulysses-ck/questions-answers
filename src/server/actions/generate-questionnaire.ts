@@ -1,13 +1,12 @@
 import { createGeminiQuestionnaireService, createGeminiModel } from "@/services/implementations/GeminiQuestionnaireService";
-import { createQuestionnaire } from "./questionnaire.mutation";
-import { ResponseSchema, SchemaType } from "@google/generative-ai";
+import type { CreateQuestionnaireWithAnswers } from "./questionnaire.mutation";
 
-export async function generateAndSaveQuestionnaire(
+export async function generateQuestionnaire(
   apiKey: string,
   model: string,
   topic: string,
   temperature = 0.7
-) {
+): Promise<{ success: boolean; data?: CreateQuestionnaireWithAnswers; error?: string }> {
   try {
     const geminiModel = createGeminiModel(apiKey, model, temperature);
     const service = createGeminiQuestionnaireService(geminiModel, apiKey);
@@ -15,7 +14,10 @@ export async function generateAndSaveQuestionnaire(
     // Generate questionnaire content
     const questionnaireData = await service.generateQuestionnaire(topic);
     
-    return questionnaireData;
+    return {
+      success: true,
+      data: questionnaireData
+    };
   } catch (error) {
     console.error('Error generating questionnaire:', error);
     return {
