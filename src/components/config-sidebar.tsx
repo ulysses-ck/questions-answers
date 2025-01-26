@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider } from "@heroui/react";
+import { Card, CardBody, CardHeader, Input, Select, SelectItem, Divider, Accordion, AccordionItem } from "@heroui/react";
 import { Model } from "@/types/gemini";
 import { listModels } from "@/services/implementations/GeminiQuestionnaireService";
 
@@ -149,29 +149,42 @@ export default function ConfigSidebar({ onConfigChange }: ConfigSidebarProps) {
           </div>
         </div>
         <Divider />
-        <div>
-          <h3 className="text-sm font-medium mb-4">Safety Settings</h3>
-          {safetySettings.map((setting) => (
-            <div key={setting.category} className="mb-4">
-              <label className="block text-sm mb-2">
-                {harmCategories[setting.category as keyof typeof harmCategories]}
-              </label>
-              <Select
-                value={setting.threshold}
-                onChange={(e) =>
-                  handleSafetySettingChange(setting.category, e.target.value)
-                }
-                className="w-full"
-              >
-                {blockThresholds.map((threshold) => (
-                  <SelectItem key={threshold.value} value={threshold.value}>
-                    {threshold.label}
-                  </SelectItem>
-                ))}
-              </Select>
+        <Accordion>
+          <AccordionItem
+            key="advanced-config"
+            aria-label="Advanced Configuration"
+            title="Advanced Configuration"
+          >
+            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-4">
+              <p className="text-xs text-blue-800 dark:text-blue-200">
+                You are responsible for ensuring that safety settings comply with your intended use case.
+                Adjusting these settings may affect the model's filtering of potentially harmful content.
+                Please use responsibly.
+              </p>
             </div>
-          ))}
-        </div>
+            <h4 className="text-sm font-medium mb-4">Safety Settings</h4>
+            {safetySettings.map((setting) => (
+              <div key={setting.category} className="mb-4">
+                <label className="block text-sm mb-2">
+                  {harmCategories[setting.category as keyof typeof harmCategories]}
+                </label>
+                <Select
+                  value={setting.threshold}
+                  onChange={(e) =>
+                    handleSafetySettingChange(setting.category, e.target.value)
+                  }
+                  className="w-full"
+                >
+                  {blockThresholds.map((threshold) => (
+                    <SelectItem key={threshold.value} value={threshold.value}>
+                      {threshold.label}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+            ))}
+          </AccordionItem>
+        </Accordion>
       </CardBody>
     </Card>
   );
