@@ -19,11 +19,13 @@ interface Progress {
 interface GeminiState {
   config: GeminiConfig
   questions: Question[]
+  generatedQuestions: Question[]
   isLoading: boolean
   error: string | null
   progress: Progress
   setConfig: (config: Partial<GeminiConfig>) => void
   setQuestions: (questions: Question[]) => void
+  addGeneratedQuestion: (question: Question) => void
   clearQuestions: () => void
   setLoading: (isLoading: boolean) => void
   setError: (error: string | null) => void
@@ -73,6 +75,7 @@ const getInitialConfig = (): GeminiConfig => {
 export const useGeminiStore = create<GeminiState>()((set) => ({
   config: getInitialConfig(),
   questions: [],
+  generatedQuestions: [],
   isLoading: false,
   error: null,
   progress: {
@@ -88,7 +91,11 @@ export const useGeminiStore = create<GeminiState>()((set) => ({
       return { config: updatedConfig }
     }),
   setQuestions: (questions) => set({ questions }),
-  clearQuestions: () => set({ questions: [] }),
+  addGeneratedQuestion: (question) => 
+    set((state) => ({
+      generatedQuestions: [...state.generatedQuestions, question]
+    })),
+  clearQuestions: () => set({ questions: [], generatedQuestions: [] }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   setProgress: (progress) => set({ progress }),
