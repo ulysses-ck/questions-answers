@@ -2,6 +2,7 @@
 
 import { type ReactNode } from 'react'
 import { useGeminiStore } from '@/stores/gemini-store'
+import { useShallow } from 'zustand/react/shallow'
 
 interface GeminiProviderProps {
   children: ReactNode
@@ -19,11 +20,13 @@ export const useGeminiError = () => useGeminiStore((state) => state.error)
 export const useGeminiProgress = () => useGeminiStore((state) => state.progress)
 
 // Export store actions
-export const useGeminiActions = () => useGeminiStore((state) => ({
-  setConfig: state.setConfig,
-  setQuestions: state.setQuestions,
-  clearQuestions: state.clearQuestions,
-  setLoading: state.setLoading,
-  setError: state.setError,
-  setProgress: state.setProgress,
-}))
+export const useGeminiActions = () => useGeminiStore(
+  useShallow((state) => ({
+    setConfig: state.setConfig,
+    setQuestions: state.setQuestions,
+    clearQuestions: state.clearQuestions,
+    setLoading: state.setLoading,
+    setError: state.setError,
+    setProgress: state.setProgress,
+  }))
+)

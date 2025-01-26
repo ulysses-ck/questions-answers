@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useGeminiStore } from "@/stores/gemini-store";
 import { createGeminiQuestionnaireService, createGeminiModel } from "@/services/implementations/GeminiQuestionnaireService";
 import { Question } from "@/types/gemini";
+import { useShallow } from 'zustand/react/shallow';
 
 interface UseQuestionGenerationProps {
   apiKey: string;
@@ -11,19 +12,21 @@ interface UseQuestionGenerationProps {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestionGenerationProps) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+  const { setQuestions, setLoading, setError, setProgress } = useGeminiStore(
+    useShallow((state) => ({
+      setQuestions: state.setQuestions,
+      setLoading: state.setLoading,
+      setError: state.setError,
+      setProgress: state.setProgress,
+    }))
+  );
 
   const generateQuestions = async (prompt: string, count: number) => {
     console.log("Generating questions...");
     console.log("Prompt:", prompt);
-    setIsLoading(true);
+    setLoading(true);
     setError(null);
-    setCurrentQuestion(0);
-    setTotalQuestions(count);
+    setProgress({ current: 0, total: count });
 
     const geminiModel = createGeminiModel(apiKey, model, temperature);
     const service = createGeminiQuestionnaireService(geminiModel, apiKey);
@@ -39,8 +42,8 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
         const result = await service.generateQuestion(prompt);
         if (result) {
           newQuestions.push(result);
-          setQuestions(prev => [...prev, result]);
-          setCurrentQuestion(i + 1);
+          setQuestions([...newQuestions]); // Update with all questions so far
+          setProgress({ current: i + 1, total: count });
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -49,27 +52,18 @@ export const useQuestionGeneration = ({ apiKey, model, temperature }: UseQuestio
       }
     }
 
-    setIsLoading(false);
+    setLoading(false);
     return newQuestions;
   };
 
   const clearQuestions = () => {
     setQuestions([]);
     setError(null);
-    setCurrentQuestion(0);
-    setTotalQuestions(0);
+    setProgress({ current: 0, total: 0 });
   };
 
   return {
-    questions,
-    isLoading,
-    error,
     generateQuestions,
     clearQuestions,
-    setQuestions,
-    progress: {
-      current: currentQuestion,
-      total: totalQuestions
-    }
   };
 }; 
