@@ -19,7 +19,7 @@ const navigationItems = [
 ];
 
 export function NavigationSidebar() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   return (
     <>
@@ -37,9 +37,19 @@ export function NavigationSidebar() {
         placement="left" 
         size="sm"
         backdrop='blur'
+        closeButton={
+          <Button 
+            isIconOnly
+            variant="light" 
+            onPress={onClose}
+            className="text-gray-300 hover:text-white"
+          >
+            <X size={20} />
+          </Button>
+        }
       >
         <DrawerContent className="bg-gray-800">
-          {(onClose) => (
+          {(_) => (
             <>
               <DrawerHeader className="flex justify-between items-center border-b border-gray-800">
                 <h2 className="text-xl font-semibold text-white">Navigation</h2>
@@ -50,7 +60,9 @@ export function NavigationSidebar() {
                     {navigationItems.map((item) => (
                       <li key={item.href}>
                         <ActiveLink href={item.href}>
-                          {item.label}
+                          <button className="w-full h-full" type="button" onClick={onClose}>
+                            {item.label}
+                          </button>
                         </ActiveLink>
                       </li>
                     ))}
